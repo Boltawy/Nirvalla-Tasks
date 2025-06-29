@@ -1,39 +1,51 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { Plus, MoreVertical, Trash2, Edit2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { useSortable } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import { useDroppable } from "@dnd-kit/core"
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
-import { TaskItem } from "./task-item"
+import type React from "react";
+import { useState } from "react";
+import { Plus, MoreVertical, Trash2, Edit2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { useDroppable } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { TaskItem } from "./task-item";
 
 export interface Task {
-  id: string
-  title: string
-  completed: boolean
-  notes: string
-  subtasks: Task[]
+  id: string;
+  title: string;
+  completed: boolean;
+  notes: string;
+  subtasks: Task[];
 }
 
 export interface TaskList {
-  id: string
-  name: string
-  tasks: Task[]
+  id: string;
+  name: string;
+  tasks: Task[];
 }
 
 interface TaskColumnProps {
-  taskList: TaskList
-  onAddTask: (title: string, parentId?: string) => void
-  onToggleTask: (taskId: string, parentId?: string) => void
-  onUpdateTask: (taskId: string, updates: Partial<Task>, parentId?: string) => void
-  onDeleteTask: (taskId: string, parentId?: string) => void
-  onUpdateListName: (name: string) => void
-  onDeleteList: () => void
+  taskList: TaskList;
+  onAddTask: (title: string, parentId?: string) => void;
+  onToggleTask: (taskId: string, parentId?: string) => void;
+  onUpdateTask: (
+    taskId: string,
+    updates: Partial<Task>,
+    parentId?: string
+  ) => void;
+  onDeleteTask: (taskId: string, parentId?: string) => void;
+  onUpdateListName: (name: string) => void;
+  onDeleteList: () => void;
 }
 
 export function TaskColumn({
@@ -45,9 +57,9 @@ export function TaskColumn({
   onUpdateListName,
   onDeleteList,
 }: TaskColumnProps) {
-  const [newTaskTitle, setNewTaskTitle] = useState("")
-  const [editingListName, setEditingListName] = useState(false)
-  const [listNameValue, setListNameValue] = useState(taskList.name)
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [editingListName, setEditingListName] = useState(false);
+  const [listNameValue, setListNameValue] = useState(taskList.name);
 
   const {
     attributes,
@@ -58,54 +70,54 @@ export function TaskColumn({
     isDragging,
   } = useSortable({
     id: `list-${taskList.id}`,
-  })
+  });
 
   const { setNodeRef: setDroppableRef } = useDroppable({
     id: `list-${taskList.id}`,
-  })
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
-  }
+  };
 
   const handleAddTask = () => {
     if (newTaskTitle.trim()) {
-      onAddTask(newTaskTitle.trim())
-      setNewTaskTitle("")
+      onAddTask(newTaskTitle.trim());
+      setNewTaskTitle("");
     }
-  }
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleAddTask()
+      handleAddTask();
     }
-  }
+  };
 
   const saveListName = () => {
     if (listNameValue.trim()) {
-      onUpdateListName(listNameValue.trim())
+      onUpdateListName(listNameValue.trim());
     }
-    setEditingListName(false)
-  }
+    setEditingListName(false);
+  };
 
   const cancelListNameEdit = () => {
-    setListNameValue(taskList.name)
-    setEditingListName(false)
-  }
+    setListNameValue(taskList.name);
+    setEditingListName(false);
+  };
 
-  const incompleteTasks = taskList.tasks.filter((task) => !task.completed)
-  const completedTasks = taskList.tasks.filter((task) => task.completed)
+  const incompleteTasks = taskList.tasks.filter((task) => !task.completed);
+  const completedTasks = taskList.tasks.filter((task) => task.completed);
 
   return (
     <div
       ref={(node) => {
-        setSortableRef(node)
-        setDroppableRef(node)
+        setSortableRef(node);
+        setDroppableRef(node);
       }}
       style={style}
-      className="w-80 bg-gray-50 rounded-lg border border-gray-200 flex flex-col h-full"
+      className="w-80 bg-gray-50 rounded-lg border border-gray-200 flex flex-col"
     >
       {/* Column Header */}
       <div
@@ -119,8 +131,8 @@ export function TaskColumn({
               value={listNameValue}
               onChange={(e) => setListNameValue(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") saveListName()
-                if (e.key === "Escape") cancelListNameEdit()
+                if (e.key === "Enter") saveListName();
+                if (e.key === "Escape") cancelListNameEdit();
               }}
               onBlur={saveListName}
               className="text-lg font-medium border-none shadow-none p-0 h-auto focus-visible:ring-0"
@@ -195,7 +207,9 @@ export function TaskColumn({
         {/* Completed Tasks */}
         {completedTasks.length > 0 && (
           <div className="mt-6">
-            <div className="text-xs font-medium text-gray-500 mb-2 px-1">Completed ({completedTasks.length})</div>
+            <div className="text-xs font-medium text-gray-500 mb-2 px-1">
+              Completed ({completedTasks.length})
+            </div>
             <SortableContext
               items={completedTasks.map((task) => `task-${task.id}`)}
               strategy={verticalListSortingStrategy}
@@ -224,5 +238,5 @@ export function TaskColumn({
         )}
       </div>
     </div>
-  )
+  );
 }

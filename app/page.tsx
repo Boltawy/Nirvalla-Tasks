@@ -464,7 +464,7 @@ export default function TasksApp() {
           onDragEnd={handleDragEnd}
         >
           {viewMode === "list" ? (
-            <div className="flex gap-6 p-6 min-w-max h-full overflow-x-auto">
+            <div className="flex items-start gap-6 p-6 min-w-max h-full overflow-x-auto">
               <SortableContext
                 items={taskLists.map((list) => `list-${list.id}`)}
                 strategy={horizontalListSortingStrategy}

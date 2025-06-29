@@ -42,14 +42,14 @@ export function TaskHeader({ onAddList, viewMode, onViewModeChange }: TaskHeader
           <Button variant="ghost" size="icon" className="h-8 w-8">
             <Menu className="h-4 w-4" />
           </Button>
-          <h1 className="text-xl font-medium text-gray-900">Tasks</h1>
+          <h1 className="text-xl font-semibold text-gray-900">Nirvalla Tasks</h1>
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="relative">
+          {/* <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input placeholder="Search tasks" className="pl-10 w-64 bg-gray-50 border-gray-200 focus:bg-white" />
-          </div>
+          </div> */}
 
           {/* View Mode Toggle */}
           <div className="flex items-center bg-gray-100 rounded-lg p-1">
