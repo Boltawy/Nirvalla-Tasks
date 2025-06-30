@@ -23,16 +23,16 @@ export function TaskGrid({
 }: TaskGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-max">
-      {taskLists.map((taskList) => (
+      {taskLists.map((tasklist) => (
         <TaskGridCard
-          key={taskList.id}
-          taskList={taskList}
-          onAddTask={(title, parentId) => onAddTask(taskList.id, title, parentId)}
-          onToggleTask={(taskId, parentId) => onToggleTask(taskList.id, taskId, parentId)}
-          onUpdateTask={(taskId, updates, parentId) => onUpdateTask(taskList.id, taskId, updates, parentId)}
-          onDeleteTask={(taskId, parentId) => onDeleteTask(taskList.id, taskId, parentId)}
-          onUpdateListName={(name) => onUpdateListName(taskList.id, name)}
-          onDeleteList={() => onDeleteList(taskList.id)}
+          key={tasklist.id}
+          tasklist={tasklist}
+          onAddTask={(title, parentId) => onAddTask(tasklist.id, title, parentId)}
+          onToggleTask={(taskId, parentId) => onToggleTask(tasklist.id, taskId, parentId)}
+          onUpdateTask={(taskId, updates, parentId) => onUpdateTask(tasklist.id, taskId, updates, parentId)}
+          onDeleteTask={(taskId, parentId) => onDeleteTask(tasklist.id, taskId, parentId)}
+          onUpdateListName={(name) => onUpdateListName(tasklist.id, name)}
+          onDeleteList={() => onDeleteList(tasklist.id)}
         />
       ))}
     </div>

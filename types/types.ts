@@ -1,6 +1,6 @@
 export interface TaskList {
   id: string;
-  name: string;
+  title: string;
   tasks: Task[];
   userId: string;
   isDefault: boolean;
@@ -18,7 +18,26 @@ export interface Task {
   parentId?: string | null;
   completedAt: Date | null;
   deletedAt: Date | null;
-  notes: string;
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export interface fetchedTaskList {
+  _id: string;
+  title: string;
+  description?: string;
+  isDefault: boolean;
+  deletedAt: Date | null;
+  userId: string;
+}
+
+export interface fetchedTask {
+  _id: string;
+  title: string;
+  description?: string;
+  taskListId: string;
+  parentId?: string | null;
+  completedAt: Date | null;
+  deletedAt: Date | null;
+  userId: string;
 }

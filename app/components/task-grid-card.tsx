@@ -14,7 +14,7 @@ import type { TaskList, Task } from "./task-column"
 import { cn } from "@/lib/utils"
 
 interface TaskGridCardProps {
-  taskList: TaskList
+  tasklist: TaskList
   onAddTask: (title: string, parentId?: string) => void
   onToggleTask: (taskId: string, parentId?: string) => void
   onUpdateTask: (taskId: string, updates: Partial<Task>, parentId?: string) => void
@@ -24,7 +24,7 @@ interface TaskGridCardProps {
 }
 
 export function TaskGridCard({
-  taskList,
+  tasklist,
   onAddTask,
   onToggleTask,
   onUpdateTask,
@@ -34,7 +34,7 @@ export function TaskGridCard({
 }: TaskGridCardProps) {
   const [newTaskTitle, setNewTaskTitle] = useState("")
   const [editingListName, setEditingListName] = useState(false)
-  const [listNameValue, setListNameValue] = useState(taskList.name)
+  const [listNameValue, setListNameValue] = useState(tasklist.name)
 
   const {
     attributes,
@@ -44,11 +44,11 @@ export function TaskGridCard({
     transition,
     isDragging,
   } = useSortable({
-    id: `list-${taskList.id}`,
+    id: `list-${tasklist.id}`,
   })
 
   const { setNodeRef: setDroppableRef, isOver } = useDroppable({
-    id: `list-${taskList.id}`,
+    id: `list-${tasklist.id}`,
   })
 
   const style = {
@@ -78,12 +78,12 @@ export function TaskGridCard({
   }
 
   const cancelListNameEdit = () => {
-    setListNameValue(taskList.name)
+    setListNameValue(tasklist.name)
     setEditingListName(false)
   }
 
-  const incompleteTasks = taskList.tasks.filter((task) => !task.completed)
-  const completedTasks = taskList.tasks.filter((task) => task.completed)
+  const incompleteTasks = tasklist.tasks.filter((task) => !task.completed)
+  const completedTasks = tasklist.tasks.filter((task) => task.completed)
 
   return (
     <div
@@ -117,7 +117,7 @@ export function TaskGridCard({
               className="text-lg font-medium text-gray-900 cursor-pointer hover:text-blue-600 truncate"
               onClick={() => setEditingListName(true)}
             >
-              {taskList.name}
+              {tasklist.name}
             </h3>
           )}
 
@@ -140,7 +140,7 @@ export function TaskGridCard({
           </DropdownMenu>
         </div>
         <p className="text-sm text-gray-500 mt-1">
-          {incompleteTasks.length} of {taskList.tasks.length} tasks
+          {incompleteTasks.length} of {tasklist.tasks.length} tasks
         </p>
       </div>
 
@@ -165,7 +165,7 @@ export function TaskGridCard({
           <TaskItem
             key={task.id}
             task={task}
-            listId={taskList.id}
+            listId={tasklist.id}
             onToggleTask={onToggleTask}
             onUpdateTask={onUpdateTask}
             onDeleteTask={onDeleteTask}
@@ -182,7 +182,7 @@ export function TaskGridCard({
               <TaskItem
                 key={task.id}
                 task={task}
-                listId={taskList.id}
+                listId={tasklist.id}
                 onToggleTask={onToggleTask}
                 onUpdateTask={onUpdateTask}
                 onDeleteTask={onDeleteTask}
@@ -194,7 +194,7 @@ export function TaskGridCard({
           </div>
         )}
 
-        {taskList.tasks.length === 0 && (
+        {tasklist.tasks.length === 0 && (
           <div className="text-center py-8 text-gray-500">
             <div className="text-sm mb-1">No tasks yet</div>
             <div className="text-xs">Add a task above to get started</div>

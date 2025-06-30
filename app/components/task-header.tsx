@@ -6,19 +6,15 @@ import { useState } from "react";
 import { Plus, Search, Menu, List, Grid3X3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { ViewMode } from "../page";
+// import type { ViewMode } from "../page";
 
 interface TaskHeaderProps {
   onAddList: (name: string) => void;
-  viewMode: ViewMode;
-  onViewModeChange: (mode: ViewMode) => void;
+  // viewMode: ViewMode;
+  // onViewModeChange: (mode: ViewMode) => void;
 }
 
-export function TaskHeader({
-  onAddList,
-  viewMode,
-  onViewModeChange,
-}: TaskHeaderProps) {
+export function TaskHeader({ onAddList }: TaskHeaderProps) {
   const [isAddingList, setIsAddingList] = useState(false);
   const [newListName, setNewListName] = useState("");
 

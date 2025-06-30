@@ -13,14 +13,14 @@ import { cn } from "@/lib/utils"
 import type { TaskList, Task } from "./task-sidebar"
 
 interface TaskMainProps {
-  taskList?: TaskList
+  tasklist?: TaskList
   onAddTask: (title: string) => void
   onToggleTask: (taskId: string) => void
   onUpdateTask: (taskId: string, updates: Partial<Task>) => void
   onDeleteTask: (taskId: string) => void
 }
 
-export function TaskMain({ taskList, onAddTask, onToggleTask, onUpdateTask, onDeleteTask }: TaskMainProps) {
+export function TaskMain({ tasklist, onAddTask, onToggleTask, onUpdateTask, onDeleteTask }: TaskMainProps) {
   const [newTaskTitle, setNewTaskTitle] = useState("")
   const [editingTask, setEditingTask] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState("")
@@ -61,22 +61,22 @@ export function TaskMain({ taskList, onAddTask, onToggleTask, onUpdateTask, onDe
     setEditNotes("")
   }
 
-  if (!taskList) {
+  if (!tasklist) {
     return (
       <div className="flex-1 flex items-center justify-center text-gray-500">Select a task list to get started</div>
     )
   }
 
-  const incompleteTasks = taskList.tasks.filter((task) => !task.completed)
-  const completedTasks = taskList.tasks.filter((task) => task.completed)
+  const incompleteTasks = tasklist.tasks.filter((task) => !task.completed)
+  const completedTasks = tasklist.tasks.filter((task) => task.completed)
 
   return (
     <div className="flex-1 flex flex-col bg-white">
       {/* Header */}
       <div className="p-6 border-b border-gray-200">
-        <h2 className="text-2xl font-medium text-gray-900">{taskList.name}</h2>
+        <h2 className="text-2xl font-medium text-gray-900">{tasklist.name}</h2>
         <p className="text-sm text-gray-500 mt-1">
-          {incompleteTasks.length} of {taskList.tasks.length} tasks remaining
+          {incompleteTasks.length} of {tasklist.tasks.length} tasks remaining
         </p>
       </div>
 
@@ -191,7 +191,7 @@ export function TaskMain({ taskList, onAddTask, onToggleTask, onUpdateTask, onDe
             </div>
           )}
 
-          {taskList.tasks.length === 0 && (
+          {tasklist.tasks.length === 0 && (
             <div className="text-center py-12 text-gray-500">
               <div className="text-lg mb-2">No tasks yet</div>
               <div className="text-sm">Add a task above to get started</div>

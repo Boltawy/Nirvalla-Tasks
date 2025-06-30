@@ -11,19 +11,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { useDroppable } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import type { TaskList, Task } from "../../types/types";
 import { TaskItem } from "./task-item";
 
-
 interface TaskColumnProps {
-  taskList: TaskList;
+  tasklist: TaskList;
   onAddTask: (title: string, parentId?: string) => void;
   onToggleTask: (taskId: string, parentId?: string) => void;
   onUpdateTask: (
@@ -37,7 +29,7 @@ interface TaskColumnProps {
 }
 
 export function TaskColumn({
-  taskList,
+  tasklist,
   onAddTask,
   onToggleTask,
   onUpdateTask,
@@ -47,28 +39,7 @@ export function TaskColumn({
 }: TaskColumnProps) {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [editingListName, setEditingListName] = useState(false);
-  const [listNameValue, setListNameValue] = useState(taskList.name);
-
-  const {
-    attributes,
-    listeners,
-    setNodeRef: setSortableRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id: `list-${taskList.id}`,
-  });
-
-  const { setNodeRef: setDroppableRef } = useDroppable({
-    id: `list-${taskList.id}`,
-  });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
+  const [listNameValue, setListNameValue] = useState(tasklist.title);
 
   const handleAddTask = () => {
     if (newTaskTitle.trim()) {
@@ -91,28 +62,21 @@ export function TaskColumn({
   };
 
   const cancelListNameEdit = () => {
-    setListNameValue(taskList.name);
+    setListNameValue(tasklist.title);
     setEditingListName(false);
   };
 
-  const incompleteTasks = taskList.tasks.filter((task) => !task.completed);
-  const completedTasks = taskList.tasks.filter((task) => task.completed);
+  // console.log(tasklist);
+  // const incompleteTasks = tasklist.tasks.filter((task) => !task.completedAt);
+  // const completedTasks = tasklist.tasks.filter((task) => task.completedAt);
 
   return (
     <div
-      ref={(node) => {
-        setSortableRef(node);
-        setDroppableRef(node);
-      }}
-      style={style}
+      ref={(node) => {}}
       className="w-80 bg-gray-50 rounded-lg border border-gray-200 flex flex-col"
     >
       {/* Column Header */}
-      <div
-        className="p-4 border-b border-gray-200 bg-white rounded-t-lg cursor-grab active:cursor-grabbing"
-        {...attributes}
-        {...listeners}
-      >
+      <div className="p-4 border-b border-gray-200 bg-white rounded-t-lg cursor-grab active:cursor-grabbing">
         <div className="flex items-center justify-between">
           {editingListName ? (
             <Input
@@ -131,7 +95,7 @@ export function TaskColumn({
               className="text-lg font-medium text-gray-900 cursor-pointer hover:text-blue-600"
               onClick={() => setEditingListName(true)}
             >
-              {taskList.name}
+              {tasklist.title}
             </h3>
           )}
 
@@ -154,7 +118,7 @@ export function TaskColumn({
           </DropdownMenu>
         </div>
         {/* <p className="text-sm text-gray-500 mt-1">
-          {incompleteTasks.length} of {taskList.tasks.length} tasks
+          {incompleteTasks.length} of {tasklist.tasks.length} tasks
         </p> */}
       </div>
 
@@ -171,54 +135,48 @@ export function TaskColumn({
           />
         </div>
       </div>
-
       {/* Tasks */}
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
         {/* Incomplete Tasks */}
-        <SortableContext
-          items={incompleteTasks.map((task) => `task-${task.id}`)}
-          strategy={verticalListSortingStrategy}
-        >
-          {incompleteTasks.map((task) => (
-            <TaskItem
-              key={task.id}
-              task={task}
-              listId={taskList.id}
-              onToggleTask={onToggleTask}
-              onUpdateTask={onUpdateTask}
-              onDeleteTask={onDeleteTask}
-              onAddTask={onAddTask}
-            />
-          ))}
-        </SortableContext>
+        {tasklist.tasks.map(
+          (task) =>
+            !task.completedAt && (
+              <TaskItem
+                key={task.id}
+                task={task}
+                listId={tasklist.id}
+                onToggleTask={onToggleTask}
+                onUpdateTask={onUpdateTask}
+                onDeleteTask={onDeleteTask}
+                onAddTask={onAddTask}
+              />
+            )
+        )}
 
         {/* Completed Tasks */}
-        {completedTasks.length > 0 && (
-          <div className="mt-6">
-            <div className="text-xs font-medium text-gray-500 mb-2 px-1">
-              Completed ({completedTasks.length})
-            </div>
-            <SortableContext
-              items={completedTasks.map((task) => `task-${task.id}`)}
-              strategy={verticalListSortingStrategy}
-            >
-              {completedTasks.map((task) => (
+        <div className="mt-6">
+          <div className="text-xs font-medium text-gray-500 mb-2 px-1">
+            Completed
+            {/* ({tasklist.completedTasks.length}) */}
+          </div>
+          {tasklist.tasks.map(
+            (task) =>
+              task.completedAt && (
                 <TaskItem
                   key={task.id}
                   task={task}
-                  listId={taskList.id}
+                  listId={tasklist.id}
                   onToggleTask={onToggleTask}
                   onUpdateTask={onUpdateTask}
                   onDeleteTask={onDeleteTask}
                   onAddTask={onAddTask}
                   isCompleted
                 />
-              ))}
-            </SortableContext>
-          </div>
-        )}
+              )
+          )}
+        </div>
 
-        {taskList.tasks.length === 0 && (
+        {tasklist.tasks.length === 0 && (
           <div className="text-center py-8 text-gray-500">
             <div className="text-sm mb-1">No tasks yet</div>
             <div className="text-xs">Add a task above to get started</div>

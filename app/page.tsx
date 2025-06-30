@@ -2,26 +2,15 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  DndContext,
-  type DragEndEvent,
-  type DragOverEvent,
-  type DragStartEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  closestCorners,
-  DragOverlay,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  horizontalListSortingStrategy,
-  rectSortingStrategy,
-} from "@dnd-kit/sortable";
-import { TaskColumn } from "./components/task-column";
-import { TaskGrid } from "./components/task-grid";
 import { TaskHeader } from "./components/task-header";
-import type { TaskList, Task } from "../types/types";
+import type {
+  TaskList,
+  Task,
+  fetchedTaskList,
+  fetchedTask,
+} from "../types/types";
+import TaskListArea from "./components/tasklist-area";
+import { getFlightDataPartsFromPath } from "next/dist/client/flight-data-helpers";
 
 const initialTaskLists: TaskList[] = [
   {
@@ -177,36 +166,58 @@ const initialTaskLists: TaskList[] = [
 ];
 
 //TODO Implement login
-const baseUrl = "https://nv-tasks-api.vercel.app/api/v1";
+// const baseUrl = "https://nv-tasks-api.vercel.app/api/v1";
+const baseUrl = "https://nirvalla-tasks.up.railway.app/api/v1";
+// const baseUrl = "http://localhost:3001/api/v1";
 
 const token =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODYyNjM4M2RhNWRiMWRhNTg2NzQ3YzIiLCJ1c2VyTmFtZSI6InRlc3QiLCJpYXQiOjE3NTEyNzkwNzYsImV4cCI6MTc4MjgxNTA3Nn0.STDifspT-Dcsn4qVjIodz2yDdF8Tm2pMUt6DZmfAZ-4";
 
-const getTasks = async () => {
-  const response = await axios.get(`${baseUrl}/tasks`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
-};
-
-export type ViewMode = "list" | "grid";
-
-export default async function TasksApp() {
-  const [taskLists, setTaskLists] = useState<TaskList[]>(initialTaskLists);
-  const [viewMode, setViewMode] = useState<ViewMode>("list");
-  const [activeId, setActiveId] = useState<string | null>(null);
+export default function TasksApp() {
+  const [taskLists, setTaskLists] = useState<TaskList[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
-  const tasks = getTasks();
-  // const sensors = useSensors(
-  //   useSensor(PointerSensor, {
-  //     activationConstraint: {
-  //       distance: 8,
-  //     },
-  //   })
-  // );
+  const populateTaskLists = (
+    fetchedTasks: fetchedTask[],
+    fetchedTaskLists: fetchedTaskList[]
+  ) => {
+    const tasks = fetchedTasks.map((task) => ({
+      ...task,
+      id: task._id,
+    }));
+    const taskLists = fetchedTaskLists.map((tasklist) => ({
+      ...tasklist,
+      id: tasklist._id,
+      tasks: [],
+    }));
+    for (const task of tasks) {
+      taskLists.find((list) => list.id === task.taskListId)?.tasks.push(task);
+    }
+    setTasks(tasks);
+    setTaskLists(taskLists);
+  };
+
+  const fetchData = async () => {
+    try {
+      const [tasksRes, taskListsRes] = await Promise.all([
+        axios.get(`${baseUrl}/tasks`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${baseUrl}/tasklists`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+
+      const fetchedTasks: Task[] = tasksRes.data.data.tasks;
+      const fetchedTaskLists: fetchedTaskList[] =
+        taskListsRes.data.data.taskLists;
+
+      populateTaskLists(fetchedTasks, fetchedTaskLists);
+    } catch (err) {
+      console.error("Failed to fetch tasks or task lists", err);
+    }
+  };
 
   const findTaskById = (
     taskId: string
@@ -402,33 +413,19 @@ export default async function TasksApp() {
   //   });
   // };
 
-  const findTaskInList = (list: TaskList, taskId: string): Task | null => {
-    // Check main tasks
-    const mainTask = list.tasks.find((task) => task.id === taskId);
-    if (mainTask) return mainTask;
+  // const findTaskInTaskSubtasks = (
+  //   task: Task,
+  //   targetId: string
+  // ): Task | null => {
+  //   if (task.id === targetId) return task;
 
-    // Check subtasks recursively
-    for (const task of list.tasks) {
-      const result = findTaskInTaskSubtasks(task, taskId);
-      if (result) return result;
-    }
+  //   for (const subtask of task.subtasks) {
+  //     const result = findTaskInTaskSubtasks(subtask, targetId);
+  //     if (result) return result;
+  //   }
 
-    return null;
-  };
-
-  const findTaskInTaskSubtasks = (
-    task: Task,
-    targetId: string
-  ): Task | null => {
-    if (task.id === targetId) return task;
-
-    for (const subtask of task.subtasks) {
-      const result = findTaskInTaskSubtasks(subtask, targetId);
-      if (result) return result;
-    }
-
-    return null;
-  };
+  //   return null;
+  // };
 
   // const moveTaskBetweenLists = (
   //   taskId: string,
@@ -518,114 +515,6 @@ export default async function TasksApp() {
   //   });
   // };
 
-  const addTask = (listId: string, title: string, parentId?: string) => {
-    const newTask: Task = {
-      id: Date.now().toString(),
-      title,
-      completed: false,
-      notes: "",
-      subtasks: [],
-    };
-
-    setTaskLists((prev) =>
-      prev.map((list) => {
-        if (list.id === listId) {
-          if (parentId) {
-            // Add as subtask
-            return {
-              ...list,
-              tasks: list.tasks.map((task) => {
-                const targetTask = findTaskInTaskSubtasks(task, parentId);
-                if (targetTask) {
-                  targetTask.subtasks.push(newTask);
-                }
-                return task;
-              }),
-            };
-          } else {
-            // Add as main task
-            return { ...list, tasks: [...list.tasks, newTask] };
-          }
-        }
-        return list;
-      })
-    );
-  };
-
-  const toggleTask = (listId: string, taskId: string, parentId?: string) => {
-    setTaskLists((prev) =>
-      prev.map((list) => {
-        if (list.id === listId) {
-          return {
-            ...list,
-            tasks: list.tasks.map((task) => {
-              const targetTask = findTaskInTaskSubtasks(task, taskId);
-              if (targetTask) {
-                targetTask.completed = !targetTask.completed;
-              }
-              return task;
-            }),
-          };
-        }
-        return list;
-      })
-    );
-  };
-
-  const updateTask = (
-    listId: string,
-    taskId: string,
-    updates: Partial<Task>,
-    parentId?: string
-  ) => {
-    setTaskLists((prev) =>
-      prev.map((list) => {
-        if (list.id === listId) {
-          return {
-            ...list,
-            tasks: list.tasks.map((task) => {
-              const targetTask = findTaskInTaskSubtasks(task, taskId);
-              if (targetTask) {
-                Object.assign(targetTask, updates);
-              }
-              return task;
-            }),
-          };
-        }
-        return list;
-      })
-    );
-  };
-
-  const deleteTask = (listId: string, taskId: string, parentId?: string) => {
-    setTaskLists((prev) =>
-      prev.map((list) => {
-        if (list.id === listId) {
-          if (parentId) {
-            return {
-              ...list,
-              tasks: list.tasks.map((task) => {
-                const parentTask = findTaskInTaskSubtasks(task, parentId);
-                if (parentTask) {
-                  parentTask.subtasks = parentTask.subtasks.filter(
-                    (subtask) => subtask.id !== taskId
-                  );
-                }
-                return task;
-              }),
-            };
-          } else {
-            return {
-              ...list,
-              tasks: list.tasks.filter((task) => task.id !== taskId),
-            };
-          }
-        }
-        return list;
-      })
-    );
-  };
-
   const addTaskList = (name: string) => {
     const newList: TaskList = {
       id: Date.now().toString(),
@@ -635,75 +524,34 @@ export default async function TasksApp() {
     setTaskLists((prev) => [...prev, newList]);
   };
 
-  const updateTaskListName = (listId: string, name: string) => {
-    setTaskLists((prev) =>
-      prev.map((list) => (list.id === listId ? { ...list, name } : list))
-    );
-  };
-
-  const deleteTaskList = (listId: string) => {
-    setTaskLists((prev) => prev.filter((list) => list.id !== listId));
-  };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div className="h-screen bg-white flex flex-col">
-      <TaskHeader
-        onAddList={addTaskList}
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
-      />
+      <TaskHeader onAddList={addTaskList} />
       <div className="flex-1 overflow-auto">
-        {/* <DndContext
-          sensors={sensors}
-          collisionDetection={closestCorners}
-          onDragStart={handleDragStart}
-          onDragOver={handleDragOver}
-          onDragEnd={handleDragEnd}
-        > */}
-            <div className="flex items-start gap-6 p-6 min-w-max h-full overflow-x-auto">
-              {/* <SortableContext
-                items={taskLists.map((list) => `list-${list.id}`)}
-                strategy={horizontalListSortingStrategy}
-              > */}
-                {taskLists.map((taskList) => (
-                  <TaskColumn
-                    key={taskList.id}
-                    taskList={taskList}
-                    onAddTask={(title, parentId) =>
-                      addTask(taskList.id, title, parentId)
-                    }
-                    onToggleTask={(taskId, parentId) =>
-                      toggleTask(taskList.id, taskId, parentId)
-                    }
-                    onUpdateTask={(taskId, updates, parentId) =>
-                      updateTask(taskList.id, taskId, updates, parentId)
-                    }
-                    onDeleteTask={(taskId, parentId) =>
-                      deleteTask(taskList.id, taskId, parentId)
-                    }
-                    onUpdateListName={(name) =>
-                      updateTaskListName(taskList.id, name)
-                    }
-                    onDeleteList={() => deleteTaskList(taskList.id)}
-                  />
-                ))}
-              {/* </SortableContext> */}
+        <div className="flex items-start gap-6 p-6 min-w-max h-full overflow-x-auto">
+          <TaskListArea
+            tasklists={taskLists}
+            tasks={tasks}
+            setTaskLists={setTaskLists}
+            // tasksData={tasksData}
+          />
+        </div>
+        {activeTask && (
+          <div className="bg-white p-3 rounded-lg border border-gray-200 shadow-lg opacity-90 max-w-64">
+            <div className="text-sm font-medium truncate">
+              {activeTask.title}
             </div>
-          {/* <DragOverlay> */}
-            {activeTask && (
-              <div className="bg-white p-3 rounded-lg border border-gray-200 shadow-lg opacity-90 max-w-64">
-                <div className="text-sm font-medium truncate">
-                  {activeTask.title}
-                </div>
-                {activeTask.notes && (
-                  <div className="text-xs text-gray-500 mt-1 truncate">
-                    {activeTask.notes}
-                  </div>
-                )}
+            {/* {activeTask.notes && (
+              <div className="text-xs text-gray-500 mt-1 truncate">
+                {activeTask.notes}
               </div>
-            )}
-          {/* </DragOverlay>
-        </DndContext> */}
+            )} */}
+          </div>
+        )}
       </div>
     </div>
   );
