@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import type { TaskList, Task } from "../types/task"
+import type { TaskList, Task } from "../types/types"
 import { cn } from "@/lib/utils"
 
 interface TaskMainProps {

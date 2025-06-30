@@ -18,21 +18,9 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import type { TaskList, Task } from "../../types/types";
 import { TaskItem } from "./task-item";
 
-export interface Task {
-  id: string;
-  title: string;
-  completed: boolean;
-  notes: string;
-  subtasks: Task[];
-}
-
-export interface TaskList {
-  id: string;
-  name: string;
-  tasks: Task[];
-}
 
 interface TaskColumnProps {
   taskList: TaskList;

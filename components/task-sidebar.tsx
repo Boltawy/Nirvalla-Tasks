@@ -6,7 +6,7 @@ import { useState } from "react"
 import { Plus, List, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import type { TaskList } from "../types/task"
+import type { TaskList } from "../types/types"
 import { cn } from "@/lib/utils"
 
 interface TaskSidebarProps {
