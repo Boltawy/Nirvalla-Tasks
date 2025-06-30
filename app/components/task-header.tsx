@@ -1,48 +1,54 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Plus, Search, Menu, List, Grid3X3 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import type { ViewMode } from "../page"
+import { useState } from "react";
+import { Plus, Search, Menu, List, Grid3X3 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import type { ViewMode } from "../page";
 
 interface TaskHeaderProps {
-  onAddList: (name: string) => void
-  viewMode: ViewMode
-  onViewModeChange: (mode: ViewMode) => void
+  onAddList: (name: string) => void;
+  viewMode: ViewMode;
+  onViewModeChange: (mode: ViewMode) => void;
 }
 
-export function TaskHeader({ onAddList, viewMode, onViewModeChange }: TaskHeaderProps) {
-  const [isAddingList, setIsAddingList] = useState(false)
-  const [newListName, setNewListName] = useState("")
+export function TaskHeader({
+  onAddList,
+  viewMode,
+  onViewModeChange,
+}: TaskHeaderProps) {
+  const [isAddingList, setIsAddingList] = useState(false);
+  const [newListName, setNewListName] = useState("");
 
   const handleAddList = () => {
     if (newListName.trim()) {
-      onAddList(newListName.trim())
-      setNewListName("")
-      setIsAddingList(false)
+      onAddList(newListName.trim());
+      setNewListName("");
+      setIsAddingList(false);
     }
-  }
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleAddList()
+      handleAddList();
     } else if (e.key === "Escape") {
-      setIsAddingList(false)
-      setNewListName("")
+      setIsAddingList(false);
+      setNewListName("");
     }
-  }
+  };
 
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" className="h-8 w-8">
+          {/* <Button variant="ghost" size="icon" className="h-8 w-8">
             <Menu className="h-4 w-4" />
-          </Button>
-          <h1 className="text-xl font-semibold text-gray-900">Nirvalla Tasks</h1>
+          </Button> */}
+          <h1 className="text-xl font-semibold text-gray-900">
+            Nirvalla Tasks
+          </h1>
         </div>
 
         <div className="flex items-center gap-4">
@@ -79,7 +85,7 @@ export function TaskHeader({ onAddList, viewMode, onViewModeChange }: TaskHeader
                 onKeyDown={handleKeyPress}
                 onBlur={() => {
                   if (!newListName.trim()) {
-                    setIsAddingList(false)
+                    setIsAddingList(false);
                   }
                 }}
                 placeholder="List name"
@@ -99,5 +105,5 @@ export function TaskHeader({ onAddList, viewMode, onViewModeChange }: TaskHeader
         </div>
       </div>
     </header>
-  )
+  );
 }
