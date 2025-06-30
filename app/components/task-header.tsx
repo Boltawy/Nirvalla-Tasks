@@ -57,7 +57,7 @@ export function TaskHeader({
             <Input placeholder="Search tasks" className="pl-10 w-64 bg-gray-50 border-gray-200 focus:bg-white" />
           </div> */}
 
-          {/* View Mode Toggle */}
+          {/* View Mode Toggle
           <div className="flex items-center bg-gray-100 rounded-lg p-1">
             <Button
               variant={viewMode === "list" ? "default" : "ghost"}
@@ -75,7 +75,7 @@ export function TaskHeader({
             >
               <Grid3X3 className="h-4 w-4" />
             </Button>
-          </div>
+          </div> */}
 
           {isAddingList ? (
             <div className="flex items-center gap-2">

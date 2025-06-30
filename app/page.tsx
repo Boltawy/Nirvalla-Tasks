@@ -200,13 +200,13 @@ export default async function TasksApp() {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
   const tasks = getTasks();
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    })
-  );
+  // const sensors = useSensors(
+  //   useSensor(PointerSensor, {
+  //     activationConstraint: {
+  //       distance: 8,
+  //     },
+  //   })
+  // );
 
   const findTaskById = (
     taskId: string
@@ -219,188 +219,188 @@ export default async function TasksApp() {
       }
 
       // Check subtasks recursively
-      for (const task of list.tasks) {
-        const result = findSubtask(task, taskId, list.id);
-        if (result) return result;
-      }
+      // for (const task of list.tasks) {
+      //   const result = findSubtask(task, taskId, list.id);
+      //   if (result) return result;
+      // }
     }
     return null;
   };
 
-  const findSubtask = (
-    task: Task,
-    targetId: string,
-    listId: string
-  ): { task: Task; listId: string; parentId: string } | null => {
-    const subtask = task.subtasks.find((sub) => sub.id === targetId);
-    if (subtask) {
-      return { task: subtask, listId, parentId: task.id };
-    }
+  // const findSubtask = (
+  //   task: Task,
+  //   targetId: string,
+  //   listId: string
+  // ): { task: Task; listId: string; parentId: string } | null => {
+  //   const subtask = task.subtasks.find((sub) => sub.id === targetId);
+  //   if (subtask) {
+  //     return { task: subtask, listId, parentId: task.id };
+  //   }
 
-    // Check nested subtasks
-    for (const sub of task.subtasks) {
-      const result = findSubtask(sub, targetId, listId);
-      if (result) return result;
-    }
+  //   // Check nested subtasks
+  //   for (const sub of task.subtasks) {
+  //     const result = findSubtask(sub, targetId, listId);
+  //     if (result) return result;
+  //   }
 
-    return null;
-  };
+  //   return null;
+  // };
 
-  const handleDragStart = (event: DragStartEvent) => {
-    const { active } = event;
-    setActiveId(active.id as string);
+  // const handleDragStart = (event: DragStartEvent) => {
+  //   const { active } = event;
+  //   setActiveId(active.id as string);
 
-    if (active.id.toString().startsWith("task-")) {
-      const taskId = active.id.toString().replace("task-", "");
-      const result = findTaskById(taskId);
-      if (result) {
-        setActiveTask(result.task);
-      }
-    }
-  };
+  //   if (active.id.toString().startsWith("task-")) {
+  //     const taskId = active.id.toString().replace("task-", "");
+  //     const result = findTaskById(taskId);
+  //     if (result) {
+  //       setActiveTask(result.task);
+  //     }
+  //   }
+  // };
 
-  const handleDragOver = (event: DragOverEvent) => {
-    const { active, over } = event;
-    if (!over) return;
+  // const handleDragOver = (event: DragOverEvent) => {
+  //   const { active, over } = event;
+  //   if (!over) return;
 
-    const activeId = active.id.toString();
-    const overId = over.id.toString();
+  //   const activeId = active.id.toString();
+  //   const overId = over.id.toString();
 
-    // Handle task dragging over other tasks or lists
-    if (activeId.startsWith("task-")) {
-      const taskId = activeId.replace("task-", "");
-      const result = findTaskById(taskId);
-      if (!result) return;
+  //   // Handle task dragging over other tasks or lists
+  //   if (activeId.startsWith("task-")) {
+  //     const taskId = activeId.replace("task-", "");
+  //     const result = findTaskById(taskId);
+  //     if (!result) return;
 
-      // Dragging over a list
-      if (overId.startsWith("list-")) {
-        const targetListId = overId.replace("list-", "");
-        if (result.listId !== targetListId) {
-          moveTaskBetweenLists(
-            taskId,
-            result.listId,
-            targetListId,
-            result.parentId
-          );
-        }
-      }
-    }
-  };
+  //     // Dragging over a list
+  //     if (overId.startsWith("list-")) {
+  //       const targetListId = overId.replace("list-", "");
+  //       if (result.listId !== targetListId) {
+  //         moveTaskBetweenLists(
+  //           taskId,
+  //           result.listId,
+  //           targetListId,
+  //           result.parentId
+  //         );
+  //       }
+  //     }
+  //   }
+  // };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    setActiveId(null);
-    setActiveTask(null);
+  // const handleDragEnd = (event: DragEndEvent) => {
+  //   const { active, over } = event;
+  //   setActiveId(null);
+  //   setActiveTask(null);
 
-    if (!over) return;
+  //   if (!over) return;
 
-    const activeId = active.id.toString();
-    const overId = over.id.toString();
+  //   const activeId = active.id.toString();
+  //   const overId = over.id.toString();
 
-    // Handle task list reordering
-    if (activeId.startsWith("list-") && overId.startsWith("list-")) {
-      const activeListId = activeId.replace("list-", "");
-      const overListId = overId.replace("list-", "");
+  //   // Handle task list reordering
+  //   if (activeId.startsWith("list-") && overId.startsWith("list-")) {
+  //     const activeListId = activeId.replace("list-", "");
+  //     const overListId = overId.replace("list-", "");
 
-      if (activeListId !== overListId) {
-        reorderTaskLists(activeListId, overListId);
-      }
-    }
+  //     if (activeListId !== overListId) {
+  //       reorderTaskLists(activeListId, overListId);
+  //     }
+  //   }
 
-    // Handle task reordering and nesting
-    if (activeId.startsWith("task-")) {
-      const taskId = activeId.replace("task-", "");
-      const result = findTaskById(taskId);
-      if (!result) return;
+  //   // Handle task reordering and nesting
+  //   if (activeId.startsWith("task-")) {
+  //     const taskId = activeId.replace("task-", "");
+  //     const result = findTaskById(taskId);
+  //     if (!result) return;
 
-      if (overId.startsWith("task-")) {
-        const overTaskId = overId.replace("task-", "");
-        const overResult = findTaskById(overTaskId);
-        if (!overResult) return;
+  //     if (overId.startsWith("task-")) {
+  //       const overTaskId = overId.replace("task-", "");
+  //       const overResult = findTaskById(overTaskId);
+  //       if (!overResult) return;
 
-        // If both tasks are in the same parent, reorder them
-        if (
-          result.listId === overResult.listId &&
-          result.parentId === overResult.parentId
-        ) {
-          reorderTasks(taskId, overTaskId, result.listId, result.parentId);
-        }
-        // Otherwise, nest task under another task (make it a subtask)
-        else if (result.listId === overResult.listId && !overResult.parentId) {
-          nestTaskUnderTask(taskId, overTaskId, result.listId, result.parentId);
-        }
-      } else if (overId.startsWith("list-")) {
-        const targetListId = overId.replace("list-", "");
-        if (result.listId !== targetListId) {
-          moveTaskBetweenLists(
-            taskId,
-            result.listId,
-            targetListId,
-            result.parentId
-          );
-        }
-      }
-    }
-  };
+  //       // If both tasks are in the same parent, reorder them
+  //       if (
+  //         result.listId === overResult.listId &&
+  //         result.parentId === overResult.parentId
+  //       ) {
+  //         reorderTasks(taskId, overTaskId, result.listId, result.parentId);
+  //       }
+  //       // Otherwise, nest task under another task (make it a subtask)
+  //       else if (result.listId === overResult.listId && !overResult.parentId) {
+  //         nestTaskUnderTask(taskId, overTaskId, result.listId, result.parentId);
+  //       }
+  //     } else if (overId.startsWith("list-")) {
+  //       const targetListId = overId.replace("list-", "");
+  //       if (result.listId !== targetListId) {
+  //         moveTaskBetweenLists(
+  //           taskId,
+  //           result.listId,
+  //           targetListId,
+  //           result.parentId
+  //         );
+  //       }
+  //     }
+  //   }
+  // };
 
-  const reorderTaskLists = (activeListId: string, overListId: string) => {
-    setTaskLists((prev) => {
-      const activeIndex = prev.findIndex((list) => list.id === activeListId);
-      const overIndex = prev.findIndex((list) => list.id === overListId);
+  // const reorderTaskLists = (activeListId: string, overListId: string) => {
+  //   setTaskLists((prev) => {
+  //     const activeIndex = prev.findIndex((list) => list.id === activeListId);
+  //     const overIndex = prev.findIndex((list) => list.id === overListId);
 
-      const newLists = [...prev];
-      const [removed] = newLists.splice(activeIndex, 1);
-      newLists.splice(overIndex, 0, removed);
+  //     const newLists = [...prev];
+  //     const [removed] = newLists.splice(activeIndex, 1);
+  //     newLists.splice(overIndex, 0, removed);
 
-      return newLists;
-    });
-  };
+  //     return newLists;
+  //   });
+  // };
 
-  const reorderTasks = (
-    activeTaskId: string,
-    overTaskId: string,
-    listId: string,
-    parentId?: string
-  ) => {
-    setTaskLists((prev) => {
-      const newLists = [...prev];
-      const list = newLists.find((l) => l.id === listId);
-      if (!list) return prev;
+  // const reorderTasks = (
+  //   activeTaskId: string,
+  //   overTaskId: string,
+  //   listId: string,
+  //   parentId?: string
+  // ) => {
+  //   setTaskLists((prev) => {
+  //     const newLists = [...prev];
+  //     const list = newLists.find((l) => l.id === listId);
+  //     if (!list) return prev;
 
-      if (parentId) {
-        // Reorder subtasks
-        const parentTask = findTaskInList(list, parentId);
-        if (parentTask) {
-          const activeIndex = parentTask.subtasks.findIndex(
-            (task) => task.id === activeTaskId
-          );
-          const overIndex = parentTask.subtasks.findIndex(
-            (task) => task.id === overTaskId
-          );
+  //     if (parentId) {
+  //       // Reorder subtasks
+  //       const parentTask = findTaskInList(list, parentId);
+  //       if (parentTask) {
+  //         const activeIndex = parentTask.subtasks.findIndex(
+  //           (task) => task.id === activeTaskId
+  //         );
+  //         const overIndex = parentTask.subtasks.findIndex(
+  //           (task) => task.id === overTaskId
+  //         );
 
-          if (activeIndex !== -1 && overIndex !== -1) {
-            const [removed] = parentTask.subtasks.splice(activeIndex, 1);
-            parentTask.subtasks.splice(overIndex, 0, removed);
-          }
-        }
-      } else {
-        // Reorder main tasks
-        const activeIndex = list.tasks.findIndex(
-          (task) => task.id === activeTaskId
-        );
-        const overIndex = list.tasks.findIndex(
-          (task) => task.id === overTaskId
-        );
+  //         if (activeIndex !== -1 && overIndex !== -1) {
+  //           const [removed] = parentTask.subtasks.splice(activeIndex, 1);
+  //           parentTask.subtasks.splice(overIndex, 0, removed);
+  //         }
+  //       }
+  //     } else {
+  //       // Reorder main tasks
+  //       const activeIndex = list.tasks.findIndex(
+  //         (task) => task.id === activeTaskId
+  //       );
+  //       const overIndex = list.tasks.findIndex(
+  //         (task) => task.id === overTaskId
+  //       );
 
-        if (activeIndex !== -1 && overIndex !== -1) {
-          const [removed] = list.tasks.splice(activeIndex, 1);
-          list.tasks.splice(overIndex, 0, removed);
-        }
-      }
+  //       if (activeIndex !== -1 && overIndex !== -1) {
+  //         const [removed] = list.tasks.splice(activeIndex, 1);
+  //         list.tasks.splice(overIndex, 0, removed);
+  //       }
+  //     }
 
-      return newLists;
-    });
-  };
+  //     return newLists;
+  //   });
+  // };
 
   const findTaskInList = (list: TaskList, taskId: string): Task | null => {
     // Check main tasks
@@ -430,93 +430,93 @@ export default async function TasksApp() {
     return null;
   };
 
-  const moveTaskBetweenLists = (
-    taskId: string,
-    sourceListId: string,
-    targetListId: string,
-    parentId?: string
-  ) => {
-    setTaskLists((prev) => {
-      const newLists = [...prev];
-      const sourceList = newLists.find((list) => list.id === sourceListId);
-      const targetList = newLists.find((list) => list.id === targetListId);
+  // const moveTaskBetweenLists = (
+  //   taskId: string,
+  //   sourceListId: string,
+  //   targetListId: string,
+  //   parentId?: string
+  // ) => {
+  //   setTaskLists((prev) => {
+  //     const newLists = [...prev];
+  //     const sourceList = newLists.find((list) => list.id === sourceListId);
+  //     const targetList = newLists.find((list) => list.id === targetListId);
 
-      if (!sourceList || !targetList) return prev;
+  //     if (!sourceList || !targetList) return prev;
 
-      let taskToMove: Task | null = null;
+  //     let taskToMove: Task | null = null;
 
-      if (parentId) {
-        // Moving a subtask
-        const parentTask = findTaskInList(sourceList, parentId);
-        if (parentTask) {
-          const subtaskIndex = parentTask.subtasks.findIndex(
-            (sub) => sub.id === taskId
-          );
-          if (subtaskIndex !== -1) {
-            taskToMove = parentTask.subtasks.splice(subtaskIndex, 1)[0];
-          }
-        }
-      } else {
-        // Moving a main task
-        const taskIndex = sourceList.tasks.findIndex(
-          (task) => task.id === taskId
-        );
-        if (taskIndex !== -1) {
-          taskToMove = sourceList.tasks.splice(taskIndex, 1)[0];
-        }
-      }
+  //     if (parentId) {
+  //       // Moving a subtask
+  //       const parentTask = findTaskInList(sourceList, parentId);
+  //       if (parentTask) {
+  //         const subtaskIndex = parentTask.subtasks.findIndex(
+  //           (sub) => sub.id === taskId
+  //         );
+  //         if (subtaskIndex !== -1) {
+  //           taskToMove = parentTask.subtasks.splice(subtaskIndex, 1)[0];
+  //         }
+  //       }
+  //     } else {
+  //       // Moving a main task
+  //       const taskIndex = sourceList.tasks.findIndex(
+  //         (task) => task.id === taskId
+  //       );
+  //       if (taskIndex !== -1) {
+  //         taskToMove = sourceList.tasks.splice(taskIndex, 1)[0];
+  //       }
+  //     }
 
-      if (taskToMove) {
-        // Add to target list as main task
-        targetList.tasks.push(taskToMove);
-      }
+  //     if (taskToMove) {
+  //       // Add to target list as main task
+  //       targetList.tasks.push(taskToMove);
+  //     }
 
-      return newLists;
-    });
-  };
+  //     return newLists;
+  //   });
+  // };
 
-  const nestTaskUnderTask = (
-    taskId: string,
-    parentTaskId: string,
-    listId: string,
-    currentParentId?: string
-  ) => {
-    setTaskLists((prev) => {
-      const newLists = [...prev];
-      const list = newLists.find((l) => l.id === listId);
-      if (!list) return prev;
+  // const nestTaskUnderTask = (
+  //   taskId: string,
+  //   parentTaskId: string,
+  //   listId: string,
+  //   currentParentId?: string
+  // ) => {
+  //   setTaskLists((prev) => {
+  //     const newLists = [...prev];
+  //     const list = newLists.find((l) => l.id === listId);
+  //     if (!list) return prev;
 
-      let taskToNest: Task | null = null;
+  //     let taskToNest: Task | null = null;
 
-      if (currentParentId) {
-        // Moving from subtask to subtask
-        const currentParent = findTaskInList(list, currentParentId);
-        if (currentParent) {
-          const subtaskIndex = currentParent.subtasks.findIndex(
-            (sub) => sub.id === taskId
-          );
-          if (subtaskIndex !== -1) {
-            taskToNest = currentParent.subtasks.splice(subtaskIndex, 1)[0];
-          }
-        }
-      } else {
-        // Moving from main task to subtask
-        const taskIndex = list.tasks.findIndex((task) => task.id === taskId);
-        if (taskIndex !== -1) {
-          taskToNest = list.tasks.splice(taskIndex, 1)[0];
-        }
-      }
+  //     if (currentParentId) {
+  //       // Moving from subtask to subtask
+  //       const currentParent = findTaskInList(list, currentParentId);
+  //       if (currentParent) {
+  //         const subtaskIndex = currentParent.subtasks.findIndex(
+  //           (sub) => sub.id === taskId
+  //         );
+  //         if (subtaskIndex !== -1) {
+  //           taskToNest = currentParent.subtasks.splice(subtaskIndex, 1)[0];
+  //         }
+  //       }
+  //     } else {
+  //       // Moving from main task to subtask
+  //       const taskIndex = list.tasks.findIndex((task) => task.id === taskId);
+  //       if (taskIndex !== -1) {
+  //         taskToNest = list.tasks.splice(taskIndex, 1)[0];
+  //       }
+  //     }
 
-      if (taskToNest) {
-        const parentTask = findTaskInList(list, parentTaskId);
-        if (parentTask) {
-          parentTask.subtasks.push(taskToNest);
-        }
-      }
+  //     if (taskToNest) {
+  //       const parentTask = findTaskInList(list, parentTaskId);
+  //       if (parentTask) {
+  //         parentTask.subtasks.push(taskToNest);
+  //       }
+  //     }
 
-      return newLists;
-    });
-  };
+  //     return newLists;
+  //   });
+  // };
 
   const addTask = (listId: string, title: string, parentId?: string) => {
     const newTask: Task = {
@@ -653,19 +653,18 @@ export default async function TasksApp() {
         onViewModeChange={setViewMode}
       />
       <div className="flex-1 overflow-auto">
-        <DndContext
+        {/* <DndContext
           sensors={sensors}
           collisionDetection={closestCorners}
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
-        >
-          {viewMode === "list" ? (
+        > */}
             <div className="flex items-start gap-6 p-6 min-w-max h-full overflow-x-auto">
-              <SortableContext
+              {/* <SortableContext
                 items={taskLists.map((list) => `list-${list.id}`)}
                 strategy={horizontalListSortingStrategy}
-              >
+              > */}
                 {taskLists.map((taskList) => (
                   <TaskColumn
                     key={taskList.id}
@@ -688,28 +687,9 @@ export default async function TasksApp() {
                     onDeleteList={() => deleteTaskList(taskList.id)}
                   />
                 ))}
-              </SortableContext>
+              {/* </SortableContext> */}
             </div>
-          ) : (
-            <div className="p-6">
-              <SortableContext
-                items={taskLists.map((list) => `list-${list.id}`)}
-                strategy={rectSortingStrategy}
-              >
-                <TaskGrid
-                  taskLists={taskLists}
-                  onAddTask={addTask}
-                  onToggleTask={toggleTask}
-                  onUpdateTask={updateTask}
-                  onDeleteTask={deleteTask}
-                  onUpdateListName={updateTaskListName}
-                  onDeleteList={deleteTaskList}
-                />
-              </SortableContext>
-            </div>
-          )}
-
-          <DragOverlay>
+          {/* <DragOverlay> */}
             {activeTask && (
               <div className="bg-white p-3 rounded-lg border border-gray-200 shadow-lg opacity-90 max-w-64">
                 <div className="text-sm font-medium truncate">
@@ -722,8 +702,8 @@ export default async function TasksApp() {
                 )}
               </div>
             )}
-          </DragOverlay>
-        </DndContext>
+          {/* </DragOverlay>
+        </DndContext> */}
       </div>
     </div>
   );
