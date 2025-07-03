@@ -10,13 +10,14 @@ import { Input } from "@/components/ui/input";
 
 interface TaskHeaderProps {
   onAddList: (name: string) => void;
+  setNewListName: React.Dispatch<React.SetStateAction<string>>;
+  newListName: string;
   // viewMode: ViewMode;
   // onViewModeChange: (mode: ViewMode) => void;
 }
 
-export function TaskHeader({ onAddList }: TaskHeaderProps) {
+export function TaskHeader({ onAddList, newListName, setNewListName }: TaskHeaderProps) {
   const [isAddingList, setIsAddingList] = useState(false);
-  const [newListName, setNewListName] = useState("");
 
   const handleAddList = () => {
     if (newListName.trim()) {

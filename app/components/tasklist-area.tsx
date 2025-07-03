@@ -19,44 +19,36 @@ export default function TaskListArea({
       deletedAt: null,
       userId: "user-1",
       taskListId,
-      parentId,
+      parentId: null,
     };
 
     setTaskLists((prev) =>
       prev.map((list) => {
-        // if (list.id === listId) {
-        //   if (parentId) {
-        //     // Add as subtask
-        //     return {
-        //       ...list,
-        //       tasks: list.tasks.map((task) => {
-        //         const targetTask = findTaskInList(task, parentId);
-        //         if (targetTask) {
-        //           targetTask.subtasks.push(newTask);
-        //         }
-        //         return task;
-        //       }),
-        //     };
-        //   } else {
-        // Add as main task
-        return { ...list, tasks: [...list.tasks, newTask] };
-        //   }
-        // }
+        if (list.id === taskListId) {
+          // Add as main task
+          return { ...list, tasks: [...list.tasks, newTask] };
+        }
         return list;
       })
     );
   };
 
-  const toggleTask = (listId: string, taskId: string, parentId?: string) => {
-    setTaskLists((prev) =>
-      prev.map((list) => {
-        if (list.id === listId) {
+  const toggleTask = (
+    taskListId: string,
+    taskId: string,
+    parentId?: string
+  ) => {
+    setTaskLists((prev: TaskList[]) =>
+      prev.map((list: TaskList) => {
+        if (list.id === taskListId) {
           return {
             ...list,
-            tasks: list.tasks.map((task) => {
-              const targetTask = findTaskInList(task, taskId);
+            tasks: list.tasks.map((task: Task) => {
+              const targetTask = findTaskInListById(task, list);
               if (targetTask && targetTask.completedAt === null) {
                 targetTask.completedAt = new Date();
+              } else if (targetTask && targetTask.completedAt !== null) {
+                targetTask.completedAt = null;
               }
               return task;
             }),
@@ -70,16 +62,15 @@ export default function TaskListArea({
   const updateTask = (
     listId: string,
     taskId: string,
-    updates: Partial<Task>,
-    parentId?: string
+    updates: Partial<Task>
   ) => {
-    setTaskLists((prev) =>
-      prev.map((list) => {
+    setTaskLists((prev: TaskList[]) =>
+      prev.map((list: TaskList) => {
         if (list.id === listId) {
           return {
             ...list,
-            tasks: list.tasks.map((task) => {
-              const targetTask = findTaskInList(task, taskId);
+            tasks: list.tasks.map((task: Task) => {
+              const targetTask = findTaskInListById(taskId, list);
               if (targetTask) {
                 Object.assign(targetTask, updates);
               }
@@ -100,7 +91,7 @@ export default function TaskListArea({
             return {
               ...list,
               tasks: list.tasks.map((task) => {
-                const parentTask = findTaskInList(task, parentId);
+                const parentTask = findTaskInListById(task, list);
                 // if (parentTask) {
                 //   parentTask.subtasks = parentTask.subtasks.filter(
                 //     (subtask) => subtask.id !== taskId
@@ -120,9 +111,9 @@ export default function TaskListArea({
       })
     );
   };
-  const updateTaskListName = (listId: string, name: string) => {
+  const updateTaskListName = (listId: string, title: string) => {
     setTaskLists((prev) =>
-      prev.map((list) => (list.id === listId ? { ...list, name } : list))
+      prev.map((list) => (list.id === listId ? { ...list, title } : list))
     );
   };
 
@@ -130,15 +121,16 @@ export default function TaskListArea({
     setTaskLists((prev) => prev.filter((list) => list.id !== listId));
   };
 
-  const findTaskInList = (list: TaskList, taskId: string): Task | null => {
+  const findTaskInListById = (task: any, taskList: TaskList): Task | null => {
     // Check main tasks
-    const mainTask = list.tasks.find((task) => task.id === taskId);
+    const mainTask = taskList.tasks.find((_task) => {
+      if (task.id) return _task.id === task.id;
+      else return _task.id === task;
+    });
     if (mainTask) return mainTask;
 
     return null;
   };
-
-  useEffect(() => {}, []);
 
   return (
     <>
@@ -156,8 +148,9 @@ export default function TaskListArea({
           onDeleteTask={(taskId, parentId) =>
             deleteTask(tasklist.id, taskId, parentId)
           }
-          onUpdateListName={(name) => updateTaskListName(tasklist.id, name)}
+          onUpdateListName={(title) => updateTaskListName(tasklist.id, title)}
           onDeleteList={() => deleteTaskList(tasklist.id)}
+          // isInbox
         />
       ))}
     </>

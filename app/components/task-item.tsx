@@ -76,12 +76,7 @@ export function TaskItem({
 
   const saveEdit = () => {
     onUpdateTask(
-      task.id,
-      {
-        title: editTitle.trim() || "Untitled task",
-        notes: editNotes,
-      },
-      parentId,
+      task
     )
     setEditingTask(false)
   }

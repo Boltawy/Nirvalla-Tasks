@@ -1,19 +1,22 @@
-import type { Metadata } from 'next'
-import './globals.css'
+import type { Metadata } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: 'Nivalla Tasks',
-  description: 'The modern task management app',
-}
+  title: "Nirvalla Tasks",
+  description: "The modern task management app",
+  icons: {
+    icon: "/nirvalla-b&w3.svg",
+  },
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
       <body>{children}</body>
     </html>
-  )
+  );
 }
