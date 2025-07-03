@@ -66,7 +66,6 @@ export function TaskColumn({
     setEditingListName(false);
   };
 
-  // console.log(tasklist);
   // const incompleteTasks = tasklist.tasks.filter((task) => !task.completedAt);
   // const completedTasks = tasklist.tasks.filter((task) => task.completedAt);
 
@@ -145,10 +144,6 @@ export function TaskColumn({
                 key={task.id}
                 task={task}
                 listId={tasklist.id}
-                onToggleTask={onToggleTask}
-                onUpdateTask={onUpdateTask}
-                onDeleteTask={onDeleteTask}
-                onAddTask={onAddTask}
               />
             )
         )}
@@ -166,11 +161,6 @@ export function TaskColumn({
                   key={task.id}
                   task={task}
                   listId={tasklist.id}
-                  onToggleTask={onToggleTask}
-                  onUpdateTask={onUpdateTask}
-                  onDeleteTask={onDeleteTask}
-                  onAddTask={onAddTask}
-                  isCompleted
                 />
               )
           )}

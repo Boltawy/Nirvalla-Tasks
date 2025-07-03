@@ -4,13 +4,13 @@ import Link from "next/link";
 
 export default function Nav() {
   return (
-    <nav className="fixed z-50 w-screen flex justify-between items-center px-12 py-4 mb-4 border-b border-gray-200 shadow-sm bg-gradient-to-b from-white from-20% via-white/95 via-80% to-white/90 dark:from-black dark:from-20% dark:via-black/95 dark:via-80% dark:to-black/90 dark:border-gray-700">
+    <nav className="fixed z-50 w-screen flex justify-between items-center px-4 sm:px-8 md:px-12 py-3 mb-4 border-b border-gray-200 shadow-sm bg-gradient-to-b from-white from-20% via-white/95 via-80% to-white/90 dark:from-black dark:from-20% dark:via-black/95 dark:via-80% dark:to-black/90 dark:border-gray-700">
       <div>
         <Image
           src="/nirvalla-b&w.svg"
           alt="nirvalla logo"
-          width={50}
-          height={50}
+          width={35}
+          height={35}
         />
       </div>
       <ul className="flex justify-between items-center gap-4">

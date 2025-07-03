@@ -8,34 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 // import type { ViewMode } from "../page";
 
-interface TaskHeaderProps {
-  onAddList: (name: string) => void;
-  setNewListName: React.Dispatch<React.SetStateAction<string>>;
-  newListName: string;
-  // viewMode: ViewMode;
-  // onViewModeChange: (mode: ViewMode) => void;
-}
-
-export function TaskHeader({ onAddList, newListName, setNewListName }: TaskHeaderProps) {
-  const [isAddingList, setIsAddingList] = useState(false);
-
-  const handleAddList = () => {
-    if (newListName.trim()) {
-      onAddList(newListName.trim());
-      setNewListName("");
-      setIsAddingList(false);
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleAddList();
-    } else if (e.key === "Escape") {
-      setIsAddingList(false);
-      setNewListName("");
-    }
-  };
-
+export function TaskHeader() {
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -73,32 +46,6 @@ export function TaskHeader({ onAddList, newListName, setNewListName }: TaskHeade
               <Grid3X3 className="h-4 w-4" />
             </Button>
           </div> */}
-
-          {isAddingList ? (
-            <div className="flex items-center gap-2">
-              <Input
-                value={newListName}
-                onChange={(e) => setNewListName(e.target.value)}
-                onKeyDown={handleKeyPress}
-                onBlur={() => {
-                  if (!newListName.trim()) {
-                    setIsAddingList(false);
-                  }
-                }}
-                placeholder="List name"
-                className="w-32"
-                autoFocus
-              />
-              <Button size="sm" onClick={handleAddList}>
-                Add
-              </Button>
-            </div>
-          ) : (
-            <Button onClick={() => setIsAddingList(true)} className="gap-2">
-              <Plus className="h-4 w-4" />
-              Create list
-            </Button>
-          )}
         </div>
       </div>
     </header>
