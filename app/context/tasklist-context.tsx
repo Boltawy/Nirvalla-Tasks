@@ -8,7 +8,7 @@ type TaskListContextType = {
   tasks: Task[];
   setTaskLists: React.Dispatch<React.SetStateAction<TaskList[]>>;
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
-  addTaskList: (title: string) => void;
+  addTaskList: (title?: string) => void;
   updateTaskListName: (listId: string, title: string) => void;
   toggleTask: (task: Task, tasklistId: string) => void;
   deleteTaskList: (listId: string) => void;
@@ -59,7 +59,7 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
     );
   };
 
-  const addTask = (listId: string, title: string, parentId?: string | null) => {
+  const addTask = (listId: string, title: string) => {
     const newTask: Task = {
       id: Date.now().toString(),
       title,

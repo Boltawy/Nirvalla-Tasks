@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Nirvalla Tasks",
   description: "The modern task management app",
   icons: {
-    icon: "/nirvalla-b&w.svg",
+    icon: "/nirvalla-b&w-thick.svg",
   },
 };
 

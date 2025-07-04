@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Plus, MoreVertical, Trash2, Edit2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { TaskList, Task } from "../../types/types";
 import { TaskItem } from "./task-item";
+import { tasklistContext } from "../context/tasklist-context";
 
 interface TaskColumnProps {
   tasklist: TaskList;
@@ -28,35 +29,24 @@ interface TaskColumnProps {
   onDeleteList: () => void;
 }
 
-export function TaskColumn({
-  tasklist,
-  onAddTask,
-  onToggleTask,
-  onUpdateTask,
-  onDeleteTask,
-  onUpdateListName,
-  onDeleteList,
-}: TaskColumnProps) {
+export function TaskColumn({ tasklist }: TaskColumnProps) {
+  const { addTask, updateTaskListName, deleteTaskList } =
+    useContext(tasklistContext);
+
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [editingListName, setEditingListName] = useState(false);
   const [listNameValue, setListNameValue] = useState(tasklist.title);
 
-  const handleAddTask = () => {
-    if (newTaskTitle.trim()) {
-      onAddTask(newTaskTitle.trim());
-      setNewTaskTitle("");
-    }
-  };
-
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleAddTask();
+      addTask(tasklist.id, newTaskTitle);
+      setNewTaskTitle("");
     }
   };
 
   const saveListName = () => {
     if (listNameValue.trim()) {
-      onUpdateListName(listNameValue.trim());
+      updateTaskListName(tasklist.id, newTaskTitle.trim());
     }
     setEditingListName(false);
   };
@@ -109,7 +99,12 @@ export function TaskColumn({
                 <Edit2 className="h-4 w-4 mr-2" />
                 Rename list
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={onDeleteList} className="text-red-600">
+              <DropdownMenuItem
+                onClick={() => {
+                  deleteTaskList(tasklist.id);
+                }}
+                className="text-red-600"
+              >
                 <Trash2 className="h-4 w-4 mr-2" />
                 Delete list
               </DropdownMenuItem>
@@ -140,11 +135,7 @@ export function TaskColumn({
         {tasklist.tasks.map(
           (task) =>
             !task.completedAt && (
-              <TaskItem
-                key={task.id}
-                task={task}
-                listId={tasklist.id}
-              />
+              <TaskItem key={task.id} task={task} listId={tasklist.id} />
             )
         )}
 
@@ -157,11 +148,7 @@ export function TaskColumn({
           {tasklist.tasks.map(
             (task) =>
               task.completedAt && (
-                <TaskItem
-                  key={task.id}
-                  task={task}
-                  listId={tasklist.id}
-                />
+                <TaskItem key={task.id} task={task} listId={tasklist.id} />
               )
           )}
         </div>

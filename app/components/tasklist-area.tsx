@@ -10,6 +10,8 @@ import type {
 } from "../../types/types";
 import axios from "axios";
 import { tasklistContext } from "../context/tasklist-context";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 export default function TaskListArea() {
   // const [activeTask, setActiveTask] = useState<Task | null>(null);
@@ -48,7 +50,6 @@ export default function TaskListArea() {
     }
     setTasks(tasks);
     setTaskLists(taskLists);
-    console.log(tasks)
   };
 
   const fetchData = async () => {
@@ -82,10 +83,12 @@ export default function TaskListArea() {
         <TaskColumn
           key={tasklist.id}
           tasklist={tasklist}
-          onUpdateListName={(title) => updateTaskListName(tasklist.id, title)}
-          onDeleteList={() => deleteTaskList(tasklist.id)}
         />
       ))}
+      <Button variant="outline" onClick={() => addTaskList("New Tasklist")}>
+        <Plus />
+        Add tasklist
+      </Button>
     </>
   );
 }

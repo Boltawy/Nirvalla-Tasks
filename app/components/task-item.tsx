@@ -64,9 +64,6 @@ export function TaskItem({
     setEditTitle(task.title);
   };
 
-  useEffect(() => {
-    console.log(task)
-  }, );
 
   return (
     <div className={cn("space-y-1", depth > 0 && "ml-4")}>
