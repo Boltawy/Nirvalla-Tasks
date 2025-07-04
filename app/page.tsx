@@ -9,7 +9,7 @@ import Nav from "./components/Nav";
 export default function Landing() {
   return (
     <div>
-      <Nav />
+      {/* <Nav /> */}
       <Hero />
       {/* <Features />
       <Benefits />

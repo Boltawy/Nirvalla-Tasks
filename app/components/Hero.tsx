@@ -1,30 +1,34 @@
 import Link from "next/link";
 import { Button } from "../../components/ui/button";
+import { interFont, playfairFont } from "../layout";
 
 export const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 mt-28 md:mt-4 lg:mg-2">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 bg-gradient-to-b from-gray-50/50 to-white pointer-events-none" />
 
       <div className="relative max-w-4xl mx-auto text-center">
         {/* Logo/Brand */}
         <div className="mb-8">
-          <h1 className="font-playfair text-3xl sm:text-4xl font-semibold text-gray-900 mb-2">
+          <h1 className="text-3xl sm:text-4xl font-semibold text-gray-900 mb-2">
             Nirvalla Tasks
           </h1>
           <div className="w-16 h-px bg-gray-300 mx-auto" />
         </div>
 
         {/* Main headline */}
-        <h2 className="font-playfair text-5xl sm:text-6xl lg:text-7xl font-normal text-gray-900 mb-6 leading-tight">
-          Tasks, Without
+        <h2
+          className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight"
+          style={{ fontFamily: playfairFont.style.fontFamily }}
+        >
+          Organize your life,
           <br />
-          <span className="italic">the Chaos</span>
+          <span className="italic">one task at a time.</span>
         </h2>
 
         {/* Subheadline */}
-        <p className="font-inter text-xl sm:text-2xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
+        <p className="font-inter text-lg sm:text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
           Nirvalla Tasks is a minimal, distraction-free task management app
           designed to help you think clearly, plan intentionally, and act
           mindfully. Built for creatives, developers, and anyone who wants more
