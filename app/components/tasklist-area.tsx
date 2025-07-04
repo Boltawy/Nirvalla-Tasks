@@ -80,10 +80,7 @@ export default function TaskListArea() {
   return (
     <>
       {taskLists.map((tasklist: TaskList) => (
-        <TaskColumn
-          key={tasklist.id}
-          tasklist={tasklist}
-        />
+        <TaskColumn key={tasklist.id} tasklist={tasklist} />
       ))}
       <Button variant="outline" onClick={() => addTaskList("New Tasklist")}>
         <Plus />

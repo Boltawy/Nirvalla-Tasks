@@ -47,9 +47,10 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
 
   const updateTaskListName = (listId: string, title: string) => {
     setTaskLists((prev: TaskList[]) =>
-      prev.map((list: TaskList) =>
-        list.id === listId ? { ...list, title } : list
-      )
+      prev.map((list: TaskList) => {
+        if (list.id != listId) return list;
+        else return { ...list, title };
+      })
     );
   };
 
@@ -83,27 +84,24 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
 
   const updateTask = (
     listId: string,
-    taskId: string,
+    prevTask: Task,
     updates: Partial<Task>
   ) => {
-    setTaskLists((prev: TaskList[]) =>
-      prev.map((list: TaskList) => {
-        if (list.id === listId) {
-          return {
-            ...list,
-            tasks: list.tasks.map((task: Task) => {
-              const targetTask = findTaskInListById(taskId, list);
-              if (targetTask) {
-                Object.assign(targetTask, updates);
-              }
-              return task;
-            }),
-          };
-        }
-        return list;
+    setTaskLists((prev) =>
+      prev.map((list) => {
+        if (list.id != listId) return list;
+
+        return {
+          ...list,
+          tasks: list.tasks.map((task) => {
+            if (task.id !== prevTask.id) return task;
+            return { ...task, ...updates }; // ✅ New object
+          }),
+        };
       })
     );
   };
+
   const toggleTask = (task: Task, taskListId: string) => {
     setTaskLists((prev: TaskList[]) =>
       prev.map((list: TaskList) => {

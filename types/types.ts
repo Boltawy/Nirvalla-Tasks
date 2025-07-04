@@ -1,3 +1,4 @@
+import { createContext } from 'react';
 export interface TaskList {
   id: string;
   title: string;
@@ -28,6 +29,8 @@ export interface fetchedTaskList {
   description?: string;
   isDefault: boolean;
   deletedAt: Date | null;
+  createdAt?: Date;
+  updatedAt?: Date;
   userId: string;
 }
 
@@ -39,5 +42,7 @@ export interface fetchedTask {
   parentId?: string | null;
   completedAt: Date | null;
   deletedAt: Date | null;
+  createdAt?: Date;
+  updatedAt?: Date;
   userId: string;
 }

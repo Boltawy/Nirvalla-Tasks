@@ -56,7 +56,7 @@ export function TaskItem({
 
   const saveEdit = () => {
     setEditingTask(false);
-    updateTask(listId, task.id, { title: editTitle });
+    updateTask(listId, task, { title: editTitle });
   };
 
   const cancelEdit = () => {

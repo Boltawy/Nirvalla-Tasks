@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Plus, MoreVertical, Trash2, Edit2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,16 +17,6 @@ import { tasklistContext } from "../context/tasklist-context";
 
 interface TaskColumnProps {
   tasklist: TaskList;
-  onAddTask: (title: string, parentId?: string) => void;
-  onToggleTask: (taskId: string, parentId?: string) => void;
-  onUpdateTask: (
-    taskId: string,
-    updates: Partial<Task>,
-    parentId?: string
-  ) => void;
-  onDeleteTask: (taskId: string, parentId?: string) => void;
-  onUpdateListName: (name: string) => void;
-  onDeleteList: () => void;
 }
 
 export function TaskColumn({ tasklist }: TaskColumnProps) {
@@ -45,19 +35,14 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
   };
 
   const saveListName = () => {
-    if (listNameValue.trim()) {
-      updateTaskListName(tasklist.id, newTaskTitle.trim());
-    }
     setEditingListName(false);
+    updateTaskListName(tasklist.id, listNameValue);
   };
 
   const cancelListNameEdit = () => {
     setListNameValue(tasklist.title);
     setEditingListName(false);
   };
-
-  // const incompleteTasks = tasklist.tasks.filter((task) => !task.completedAt);
-  // const completedTasks = tasklist.tasks.filter((task) => task.completedAt);
 
   return (
     <div
@@ -82,34 +67,38 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
           ) : (
             <h3
               className="text-lg font-medium text-gray-900 cursor-pointer hover:text-blue-600"
-              onClick={() => setEditingListName(true)}
+              onClick={() => {
+                if (!tasklist.isDefault) setEditingListName(true);
+              }}
             >
               {tasklist.title}
             </h3>
           )}
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setEditingListName(true)}>
-                <Edit2 className="h-4 w-4 mr-2" />
-                Rename list
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  deleteTaskList(tasklist.id);
-                }}
-                className="text-red-600"
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete list
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {!tasklist.isDefault && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-4 w-4">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setEditingListName(true)}>
+                  <Edit2 className="h-4 w-4 mr-2" />
+                  Rename list
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    deleteTaskList(tasklist.id);
+                  }}
+                  className="text-red-600"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete list
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
         {/* <p className="text-sm text-gray-500 mt-1">
           {incompleteTasks.length} of {tasklist.tasks.length} tasks
