@@ -10,9 +10,7 @@ import { tasklistContext } from "../context/tasklist-context";
 
 export default function Nav() {
   const { tasks, taskLists } = useContext(tasklistContext);
-  const handleSync = () => {
-    
-  };
+  const handleSync = () => {};
   const path = usePathname();
   return (
     <nav className="fixed top-0 z-50 w-screen flex justify-between items-center px-4 sm:px-8 md:px-12 py-3 mb-4 border-b border-gray-200 shadow-sm bg-gradient-to-b from-white from-20% via-white/70 via-80% to-white/60 backdrop-blur-md dark:from-black dark:from-20% dark:via-black/95 dark:via-80% dark:to-black/90 dark:border-gray-700">
@@ -28,7 +26,7 @@ export default function Nav() {
       </div>
       <ul className="flex justify-between items-center gap-4">
         {path == "/app" && (
-          <Button variant="secondary" className="mr-8" onClick={handleSync}>
+          <Button variant="secondary" className="mr-8 border border-transparent hover:border-neutral-600/30" onClick={handleSync}>
             <RefreshCcw />
             Sync now
           </Button>

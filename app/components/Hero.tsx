@@ -29,7 +29,7 @@ export const Hero = () => {
 
         {/* Subheadline */}
         <p className="font-inter text-lg sm:text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
-          Nirvalla Tasks is a minimal, distraction-free task management app
+          Nirvalla Tasks is a minimal personal task management app
           designed to help you think clearly, plan intentionally, and act
           mindfully. Built for creatives, developers, and anyone who wants more
           control over their lives.
