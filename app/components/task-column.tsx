@@ -46,7 +46,6 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
 
   return (
     <div
-      ref={(node) => {}}
       className="w-80 bg-gray-50 rounded-lg border border-gray-200 flex flex-col"
     >
       {/* Column Header */}

@@ -13,7 +13,7 @@ import { baseUrl, token } from "../constants";
 export default function Nav() {
   const { taskLists } = useContext(tasklistContext);
   const handleSync = () => {
-    console.log(taskLists)
+    console.log(taskLists);
     axios
       .post(
         `${baseUrl}/sync`,
@@ -38,9 +38,14 @@ export default function Nav() {
       <ul className="flex justify-between items-center gap-4">
         {path == "/app" && (
           <Button
-            variant="secondary"
-            className="mr-8 border border-transparent hover:border-neutral-600/30"
-            onClick={handleSync}
+            variant="ghost"
+            className={
+              "mr-8 border border-transparent " +
+              (token
+                ? " hover:border-neutral-600/30"
+                : " text-black/20 cursor-not-allowed hover:bg-transparent hover:text-black/20")
+            }
+            onClick={token ? handleSync : null}
           >
             <RefreshCcw />
             Sync now

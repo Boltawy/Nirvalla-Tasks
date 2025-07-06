@@ -5,9 +5,9 @@ import { createContext, useContext, useState } from "react";
 
 type TaskListContextType = {
   taskLists: TaskList[];
-  tasks: Task[];
+  // tasks: Task[];
   setTaskLists: React.Dispatch<React.SetStateAction<TaskList[]>>;
-  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  // setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   addTaskList: (title?: string) => void;
   updateTaskListName: (listId: string, title: string) => void;
   toggleTask: (task: Task, tasklistId: string) => void;
@@ -32,7 +32,7 @@ const tasklistContext = createContext<TaskListContextType>(
 
 const TaskListProvider = ({ children }: TaskListProviderProps) => {
   const [taskLists, setTaskLists] = useState<TaskList[]>([]);
-  const [tasks, setTasks] = useState<Task[]>([]);
+  // const [tasks, setTasks] = useState<Task[]>([]);
   const addTaskList = (title: string) => {
     const newList: TaskList = {
       _id: Date.now().toString(),
@@ -153,9 +153,9 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
     <tasklistContext.Provider
       value={{
         taskLists,
-        tasks,
+        // tasks,
         setTaskLists,
-        setTasks,
+        // setTasks,
         addTaskList,
         updateTaskListName,
         deleteTaskList,
