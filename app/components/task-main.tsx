@@ -99,7 +99,7 @@ export function TaskMain({ tasklist, onAddTask, onToggleTask, onUpdateTask, onDe
         <div className="p-6 space-y-1">
           {/* Incomplete Tasks */}
           {incompleteTasks.map((task) => (
-            <div key={task.id} className="group">
+            <div key={task._id} className="group">
               {editingTask === task.id ? (
                 <div className="p-3 border border-blue-200 rounded-lg bg-blue-50">
                   <Input
@@ -163,7 +163,7 @@ export function TaskMain({ tasklist, onAddTask, onToggleTask, onUpdateTask, onDe
             <div className="mt-8">
               <div className="text-sm font-medium text-gray-500 mb-3 px-3">Completed ({completedTasks.length})</div>
               {completedTasks.map((task) => (
-                <div key={task.id} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 group opacity-60">
+                <div key={task._id} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 group opacity-60">
                   <Checkbox checked={task.completed} onCheckedChange={() => onToggleTask(task.id)} className="mt-0.5" />
                   <div className="flex-1 min-w-0">
                     <div className="text-base line-through text-gray-500">{task.title}</div>

@@ -163,7 +163,7 @@ export function TaskGridCard({
         {/* Incomplete Tasks */}
         {incompleteTasks.map((task) => (
           <TaskItem
-            key={task.id}
+            key={task._id}
             task={task}
             listId={taskList.id}
             onToggleTask={onToggleTask}
@@ -180,7 +180,7 @@ export function TaskGridCard({
             <div className="text-xs font-medium text-gray-500 mb-2 px-1">Completed ({completedTasks.length})</div>
             {completedTasks.map((task) => (
               <TaskItem
-                key={task.id}
+                key={task._id}
                 task={task}
                 listId={taskList.id}
                 onToggleTask={onToggleTask}

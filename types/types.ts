@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 export interface TaskList {
-  id: string;
+  _id: string;
   title: string;
   tasks: Task[];
   userId: string;
@@ -11,7 +11,7 @@ export interface TaskList {
 }
 
 export interface Task {
-  id: string;
+  _id: string;
   title: string;
   description?: string;
   userId: string;
@@ -23,26 +23,26 @@ export interface Task {
   updatedAt?: Date;
 }
 
-export interface fetchedTaskList {
-  _id: string;
-  title: string;
-  description?: string;
-  isDefault: boolean;
-  deletedAt: Date | null;
-  createdAt?: Date;
-  updatedAt?: Date;
-  userId: string;
-}
+// export interface fetchedTaskList {
+//   _id: string;
+//   title: string;
+//   description?: string;
+//   isDefault: boolean;
+//   deletedAt: Date | null;
+//   createdAt?: Date;
+//   updatedAt?: Date;
+//   userId: string;
+// }
 
-export interface fetchedTask {
-  _id: string;
-  title: string;
-  description?: string;
-  taskListId: string;
-  parentId?: string | null;
-  completedAt: Date | null;
-  deletedAt: Date | null;
-  createdAt?: Date;
-  updatedAt?: Date;
-  userId: string;
-}
+// export interface fetchedTask {
+//   _id: string;
+//   title: string;
+//   description?: string;
+//   taskListId: string;
+//   parentId?: string | null;
+//   completedAt: Date | null;
+//   deletedAt: Date | null;
+//   createdAt?: Date;
+//   updatedAt?: Date;
+//   userId: string;
+// }

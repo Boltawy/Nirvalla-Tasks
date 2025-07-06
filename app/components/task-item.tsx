@@ -46,6 +46,7 @@ export function TaskItem({
   compact = false,
 }: TaskItemProps) {
   const { toggleTask, updateTask, deleteTask } = useContext(tasklistContext);
+  
   const [editingTask, setEditingTask] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
 
@@ -138,7 +139,7 @@ export function TaskItem({
                     Edit task
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => deleteTask(listId, task.id)}
+                    onClick={() => deleteTask(listId, task._id)}
                     className="text-red-600"
                   >
                     <Trash2 className="h-4 w-4 mr-2" />

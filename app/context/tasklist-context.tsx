@@ -35,7 +35,7 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const addTaskList = (title: string) => {
     const newList: TaskList = {
-      id: Date.now().toString(),
+      _id: Date.now().toString(),
       title,
       userId: "user-1",
       isDefault: false,
@@ -48,7 +48,7 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
   const updateTaskListName = (listId: string, title: string) => {
     setTaskLists((prev: TaskList[]) =>
       prev.map((list: TaskList) => {
-        if (list.id != listId) return list;
+        if (list._id != listId) return list;
         else return { ...list, title };
       })
     );
@@ -56,13 +56,13 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
 
   const deleteTaskList = (listId: string) => {
     setTaskLists((prev: TaskList[]) =>
-      prev.filter((list) => list.id !== listId)
+      prev.filter((list) => list._id !== listId)
     );
   };
 
   const addTask = (listId: string, title: string) => {
     const newTask: Task = {
-      id: Date.now().toString(),
+      _id: Date.now().toString(),
       title,
       completedAt: null,
       deletedAt: null,
@@ -73,7 +73,7 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
 
     setTaskLists((prev: TaskList[]) =>
       prev.map((list: TaskList) => {
-        if (list.id === newTask.taskListId) {
+        if (list._id === newTask.taskListId) {
           // Add as main task
           return { ...list, tasks: [...list.tasks, newTask] };
         }
@@ -89,12 +89,12 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
   ) => {
     setTaskLists((prev) =>
       prev.map((list) => {
-        if (list.id != listId) return list;
+        if (list._id != listId) return list;
 
         return {
           ...list,
           tasks: list.tasks.map((task) => {
-            if (task.id !== prevTask.id) return task;
+            if (task._id !== prevTask._id) return task;
             return { ...task, ...updates }; // ✅ New object
           }),
         };
@@ -105,11 +105,11 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
   const toggleTask = (task: Task, taskListId: string) => {
     setTaskLists((prev: TaskList[]) =>
       prev.map((list: TaskList) => {
-        if (list.id === taskListId) {
+        if (list._id === taskListId) {
           return {
             ...list,
             tasks: list.tasks.map((_task: Task) => {
-              if (_task.id === task.id) {
+              if (_task._id === task._id) {
                 return {
                   ..._task,
                   completedAt: _task.completedAt === null ? new Date() : null, // Calculate new completedAt
@@ -127,10 +127,10 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
   const deleteTask = (listId: string, taskId: string) => {
     setTaskLists((prev: TaskList[]) =>
       prev.map((list: TaskList) => {
-        if (list.id === listId) {
+        if (list._id === listId) {
           return {
             ...list,
-            tasks: list.tasks.filter((task: Task) => task.id !== taskId),
+            tasks: list.tasks.filter((task: Task) => task._id !== taskId),
           };
         }
         return list;
@@ -141,8 +141,8 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
   const findTaskInListById = (task: any, taskList: TaskList): Task | null => {
     // Check main tasks
     const mainTask = taskList.tasks.find((_task) => {
-      if (task.id) return _task.id === task.id;
-      else return _task.id === task;
+      if (task._id) return _task._id === task._id;
+      else return _task._id === task;
     });
     if (mainTask) return mainTask;
 

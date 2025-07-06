@@ -111,7 +111,7 @@ export function TaskMain({
         <div className="p-6 space-y-1">
           {/* Incomplete Tasks */}
           {incompleteTasks.map((task) => (
-            <div key={task.id} className="group">
+            <div key={task._id} className="group">
               {editingTask === task.id ? (
                 <div className="p-3 border border-blue-200 rounded-lg bg-blue-50">
                   <Input
@@ -197,7 +197,7 @@ export function TaskMain({
               </div>
               {completedTasks.map((task) => (
                 <div
-                  key={task.id}
+                  key={task._id}
                   className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 group opacity-60"
                 >
                   <Checkbox

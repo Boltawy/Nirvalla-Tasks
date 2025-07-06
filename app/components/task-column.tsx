@@ -29,14 +29,14 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      addTask(tasklist.id, newTaskTitle);
+      addTask(tasklist._id, newTaskTitle);
       setNewTaskTitle("");
     }
   };
 
   const saveListName = () => {
     setEditingListName(false);
-    updateTaskListName(tasklist.id, listNameValue);
+    updateTaskListName(tasklist._id, listNameValue);
   };
 
   const cancelListNameEdit = () => {
@@ -89,7 +89,7 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
-                    deleteTaskList(tasklist.id);
+                    deleteTaskList(tasklist._id);
                   }}
                   className="text-red-600"
                 >
@@ -124,7 +124,7 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
         {tasklist.tasks.map(
           (task) =>
             !task.completedAt && (
-              <TaskItem key={task.id} task={task} listId={tasklist.id} />
+              <TaskItem key={task._id} task={task} listId={tasklist._id} />
             )
         )}
 
@@ -137,7 +137,7 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
           {tasklist.tasks.map(
             (task) =>
               task.completedAt && (
-                <TaskItem key={task.id} task={task} listId={tasklist.id} />
+                <TaskItem key={task._id} task={task} listId={tasklist._id} />
               )
           )}
         </div>
