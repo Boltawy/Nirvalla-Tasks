@@ -8,24 +8,23 @@ import { tasklistContext } from "../context/tasklist-context";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
-import { baseUrl, token } from "../constants";
+import { baseUrl } from "../constants";
+import { UserContext } from "../context/UserContext";
 
 export default function TaskListArea() {
   // const [activeTask, setActiveTask] = useState<Task | null>(null);
 
   //TODO Implement login
 
+  const { token, userName } = useContext(UserContext);
+
   const {
     taskLists,
-    tasks,
     setTaskLists,
-    setTasks,
     addTaskList,
     updateTaskListName,
     deleteTaskList,
   } = useContext(tasklistContext);
-
-
 
   const fetchData = async () => {
     try {
@@ -37,13 +36,14 @@ export default function TaskListArea() {
       const lists = data.populatedLists;
       setTaskLists(lists);
     } catch (err) {
+      console.log(token);
       console.error("Failed to fetch tasks", err);
     }
   };
 
   useEffect(() => {
     if (token) fetchData();
-  }, []);
+  }, [token]);
 
   return (
     <>

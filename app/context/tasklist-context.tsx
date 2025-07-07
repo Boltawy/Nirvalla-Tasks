@@ -2,6 +2,7 @@
 
 import { Task, TaskList } from "@/types/types";
 import { createContext, useContext, useState } from "react";
+import { UserContext } from "./UserContext";
 
 type TaskListContextType = {
   taskLists: TaskList[];
@@ -32,12 +33,12 @@ const tasklistContext = createContext<TaskListContextType>(
 
 const TaskListProvider = ({ children }: TaskListProviderProps) => {
   const [taskLists, setTaskLists] = useState<TaskList[]>([]);
-  // const [tasks, setTasks] = useState<Task[]>([]);
+  const { userId, userName } = useContext(UserContext);
   const addTaskList = (title: string) => {
     const newList: TaskList = {
       _id: Date.now().toString(),
       title,
-      userId: "user-1",
+      userId,
       isDefault: false,
       deletedAt: null,
       tasks: [],
@@ -66,7 +67,7 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
       title,
       completedAt: null,
       deletedAt: null,
-      userId: "user-1",
+      userId,
       taskListId: listId,
       parentId: null,
     };

@@ -15,16 +15,19 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { SubmitHandler, useForm } from "react-hook-form";
 import LabelTextCombo from "./LabelTextCombo";
 import FloatingLabelInput from "./FloatingLabelInput";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CircleAlert } from "lucide-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
-import { baseUrl, token } from "../constants";
+import { baseUrl } from "../constants";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { UserContext } from "../context/UserContext";
 export function Login({}) {
   const [rerenderCount, setRerenderCount] = useState(0); //for re-rendering when the form error changes.
   const [open, setOpen] = useState(false);
 
+  const { token, setToken } = useContext(UserContext);
   const {
     register,
     handleSubmit,
@@ -43,9 +46,12 @@ export function Login({}) {
     try {
       const res = await axios.post(`${baseUrl}/auth/login`, data);
       console.log(res);
-      localStorage.setItem("token", res.data.data.accessToken);
+      const token = res.data.data.accessToken;
+      setToken(token);
+      localStorage.setItem("token", token);
       setOpen(false);
       toast.success("Successfully logged in!");
+      // window.location.href = "/app";
     } catch (error) {
       toast.error(
         `${error.response.data.status}: ${error.response.data.message}`

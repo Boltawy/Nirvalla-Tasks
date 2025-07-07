@@ -4,6 +4,7 @@ import "./globals.css";
 import Nav from "./components/Nav";
 import { TaskListProvider } from "./context/tasklist-context";
 import { Toaster } from "sonner";
+import { UserProvider } from "./context/UserContext";
 
 export const playfairFont = Playfair({
   subsets: ["latin"],
@@ -33,11 +34,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-      <Toaster position="top-center" className="z-[200]" richColors={true} />
-        <TaskListProvider>
-          <Nav />
-          {children}
-        </TaskListProvider>
+        <Toaster position="top-center" className="z-[200]" richColors={true} />
+        <UserProvider>
+          <TaskListProvider>
+            <Nav />
+            {children}
+          </TaskListProvider>
+        </UserProvider>
       </body>
     </html>
   );

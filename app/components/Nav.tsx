@@ -6,10 +6,10 @@ import { RefreshCcw } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { tasklistContext } from "../context/tasklist-context";
 import axios from "axios";
-import { baseUrl, token } from "../constants";
+import { baseUrl } from "../constants";
 import {
   Dialog,
   DialogClose,
@@ -30,9 +30,19 @@ import {
 } from "@/components/ui/tooltip";
 import { TooltipArrow } from "@radix-ui/react-tooltip";
 import { Login } from "./Login";
+import { UserContext } from "../context/UserContext";
+import { toast } from "sonner";
 
 export default function Nav() {
+  const { token, setToken, userName } = useContext(UserContext);
   const { taskLists } = useContext(tasklistContext);
+
+  const handleLogout = () => {
+    setToken(null);
+    localStorage.removeItem("token");
+    toast.success("Logged out!");
+  };
+
   const handleSync = () => {
     console.log(taskLists);
     axios
@@ -41,7 +51,14 @@ export default function Nav() {
         { populatedLists: taskLists },
         { headers: { Authorization: `Bearer ${token}` } }
       )
-      .then((res) => console.log(res));
+      .then((res) => {
+        console.log(res);
+        toast.success("Synced successfully!");
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to sync!");
+      });
   };
   const path = usePathname();
   return (
@@ -90,12 +107,27 @@ export default function Nav() {
               </Link>
             </li>
           )}
-          <li>
-            <Signup />
-          </li>
-          <li>
-            <Login />
-          </li>
+          {token ? (
+            <>
+              <li>
+                <p>Welcome, {userName}</p>
+              </li>
+              <li>
+                <Button variant="outline" onClick={handleLogout}>
+                  Logout
+                </Button>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <Signup />
+              </li>
+              <li>
+                <Login />
+              </li>
+            </>
+          )}
         </ul>
       </nav>
     </>
