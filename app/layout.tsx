@@ -3,6 +3,7 @@ import { Playfair, Inter } from "next/font/google";
 import "./globals.css";
 import Nav from "./components/Nav";
 import { TaskListProvider } from "./context/tasklist-context";
+import { Toaster } from "sonner";
 
 export const playfairFont = Playfair({
   subsets: ["latin"],
@@ -32,6 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+      <Toaster position="top-center" className="z-[200]" richColors={true} />
         <TaskListProvider>
           <Nav />
           {children}

@@ -10,19 +10,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { signupFormData } from "@/types/types";
+import { loginFormData } from "@/types/types";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { Label } from "@radix-ui/react-label";
 import { SubmitHandler, useForm } from "react-hook-form";
 import LabelTextCombo from "./LabelTextCombo";
 import FloatingLabelInput from "./FloatingLabelInput";
 import { useEffect, useState } from "react";
-import { CircleAlert, CircleSmall } from "lucide-react";
+import { CircleAlert } from "lucide-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
+import { baseUrl, token } from "../constants";
 import axios from "axios";
-import { baseUrl } from "../constants";
-export function Signup({}) {
+export function Login({}) {
   const [rerenderCount, setRerenderCount] = useState(0); //for re-rendering when the form error changes.
   const [open, setOpen] = useState(false);
 
@@ -31,32 +30,33 @@ export function Signup({}) {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<signupFormData>({ reValidateMode: "onSubmit" });
+  } = useForm<loginFormData>({ reValidateMode: "onSubmit" });
 
   const handleOpenChange = () => {
     setOpen(!open);
     reset();
   };
 
-  const onSubmit: SubmitHandler<signupFormData> = async (
-    data: signupFormData
+  const onSubmit: SubmitHandler<loginFormData> = async (
+    data: loginFormData
   ) => {
     try {
-      const res = await axios.post(`${baseUrl}/auth/signup`, data);
+      const res = await axios.post(`${baseUrl}/auth/login`, data);
+      console.log(res);
+      localStorage.setItem("token", res.data.data.accessToken);
       setOpen(false);
-      toast.success("Successfully signed up!");
+      toast.success("Successfully logged in!");
     } catch (error) {
       toast.error(
         `${error.response.data.status}: ${error.response.data.message}`
       );
     }
   };
-
   return (
     <>
       <Dialog open={open} onOpenChange={() => handleOpenChange()}>
         <DialogTrigger asChild>
-          <Button variant="default">Signup</Button>
+          <Button variant="secondary">Login</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           {Object.keys(errors).length > 0 && (
@@ -80,9 +80,7 @@ export function Signup({}) {
                 <p>Please fix the following errors:</p>
                 <ul className="list-disc list-inside">
                   <li className="pt-1">
-                    {errors.userName?.message ||
-                      errors.email?.message ||
-                      errors.password?.message}
+                    {errors.email?.message || errors.password?.message}
                   </li>
                 </ul>
               </div>
@@ -91,29 +89,12 @@ export function Signup({}) {
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogHeader className="mb-8">
               <DialogTitle className="text-xl -pt-4">
-                Sign Up for Nirvalla Tasks
+                Login for Nirvalla Tasks
               </DialogTitle>
-              <DialogDescription>
-                Join the beta and start using the app.
-              </DialogDescription>
+              <DialogDescription>Your tasks await</DialogDescription>
             </DialogHeader>
             <div>
               <div className="grid gap-4">
-                <FloatingLabelInput
-                  label="Name"
-                  type="text"
-                  {...register("userName", {
-                    required: "Name is required.",
-                    minLength: {
-                      value: 3,
-                      message: "Username must be at least 3 characters.",
-                    },
-                    maxLength: {
-                      value: 25,
-                      message: "Username must be at most 25 characters.",
-                    },
-                  })}
-                />
                 <FloatingLabelInput
                   label="Email"
                   type="text"

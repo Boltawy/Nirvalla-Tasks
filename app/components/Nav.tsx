@@ -22,6 +22,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
+import { Login } from "./Login";
 
 export default function Nav() {
   const { taskLists } = useContext(tasklistContext);
@@ -51,14 +59,26 @@ export default function Nav() {
         </div>
         <ul className="flex justify-between items-center gap-4">
           {path == "/app" && (
-            <Button
-              variant={token ? "ghost" : "unavailable"}
-              className="mr-8 border border-transparent hover:border-gray-400/20"
-              onClick={token ? handleSync : null}
-            >
-              <RefreshCcw />
-              Sync now
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger
+                  className={
+                    "flex items-center gap-1 px-4 py-2 mr-8 border rounded-sm border-gray-300 hover:border-gray-400 transition-all " +
+                    (token ? "" : " opacity-20 cursor-not-allowed")
+                  }
+                  onClick={token ? handleSync : null}
+                >
+                  <RefreshCcw size={14} />
+                  {/* Sync Now */}
+                </TooltipTrigger>
+                <TooltipContent arrowPadding={4}>
+                  <TooltipArrow className="fill-gray-300"></TooltipArrow>
+                  <p>
+                    {token ? "Sync Now" : "Login now to save your progress"}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
           {path != "/app" && (
             <li>
@@ -74,11 +94,7 @@ export default function Nav() {
             <Signup />
           </li>
           <li>
-            <Button className="button-secondary">
-              <a href="#" className="dark:text-white">
-                Login
-              </a>
-            </Button>
+            <Login />
           </li>
         </ul>
       </nav>

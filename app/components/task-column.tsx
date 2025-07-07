@@ -45,9 +45,7 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
   };
 
   return (
-    <div
-      className="w-80 bg-gray-50 rounded-lg border border-gray-200 flex flex-col"
-    >
+    <div className="w-80 bg-gray-50 rounded-lg border border-gray-200 flex flex-col">
       {/* Column Header */}
       <div className="p-4 border-b border-gray-200 bg-white rounded-t-lg cursor-grab active:cursor-grabbing">
         <div className="flex items-center justify-between">
