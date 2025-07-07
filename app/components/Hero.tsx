@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "../../components/ui/button";
 import { interFont, playfairFont } from "../layout";
+import NoWrap from "./NoWrap";
 
 export const Hero = () => {
   return (
@@ -19,20 +20,20 @@ export const Hero = () => {
 
         {/* Main headline */}
         <h2
-          className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight"
+          className="text-6xl sm:text-7xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight"
           style={{ fontFamily: playfairFont.style.fontFamily }}
         >
-          Organize your life,
+          Organize <NoWrap>your life</NoWrap>,
           <br />
           <span className="italic">one task at a time.</span>
         </h2>
 
         {/* Subheadline */}
         <p className="font-inter text-lg sm:text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
-          Nirvalla Tasks is a minimal personal task management app
-          designed to help you think clearly, plan intentionally, and act
-          mindfully. Built for creatives, developers, and anyone who wants more
-          control over their lives.
+          Nirvalla Tasks is a minimal personal task management app designed to
+          help you think clearly, plan intentionally, and act mindfully. Built
+          for creatives, developers, and anyone who wants more control over
+          their lives.
         </p>
 
         {/* CTA Buttons */}

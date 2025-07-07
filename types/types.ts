@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext } from "react";
 export interface TaskList {
   _id: string;
   title: string;
@@ -21,6 +21,17 @@ export interface Task {
   deletedAt: Date | null;
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export interface signupFormData {
+  userName: string;
+  email: string;
+  password: string;
+}
+
+export interface loginFormData {
+  email: string;
+  password: string;
 }
 
 // export interface fetchedTaskList {

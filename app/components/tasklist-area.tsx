@@ -81,7 +81,7 @@ export default function TaskListArea() {
   };
 
   useEffect(() => {
-    fetchData();
+    if (token) fetchData();
   }, []);
 
   return (
