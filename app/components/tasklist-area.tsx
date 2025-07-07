@@ -25,46 +25,7 @@ export default function TaskListArea() {
     deleteTaskList,
   } = useContext(tasklistContext);
 
-  // const generateTaskLists = (
-  //   fetchedTasks: fetchedTask[],
-  //   fetchedTaskLists: fetchedTaskList[]
-  // ) => {
-  //   const tasks = fetchedTasks.map((task) => ({
-  //     ...task,
-  //     id: task._id,
-  //   }));
-  //   const taskLists = fetchedTaskLists.map((tasklist) => ({
-  //     ...tasklist,
-  //     id: tasklist._id,
-  //     tasks: [],
-  //   }));
-  //   for (const task of tasks) {
-  //     taskLists.find((list) => list.id === task.taskListId)?.tasks.push(task);
-  //   }
-  //   setTasks(tasks);
-  //   setTaskLists(taskLists);
-  // };
 
-  // const fetchData = async () => {
-  //   try {
-  //     const [tasksRes, taskListsRes] = await Promise.all([
-  //       axios.get(`${baseUrl}/tasks?showCompleted=true`, {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       }),
-  //       axios.get(`${baseUrl}/tasklists`, {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       }),
-  //     ]);
-
-  //     const fetchedTasks: fetchedTask[] = tasksRes.data.data.tasks;
-  //     const fetchedTaskLists: fetchedTaskList[] =
-  //       taskListsRes.data.data.taskLists;
-
-  //     generateTaskLists(fetchedTasks, fetchedTaskLists);
-  //   } catch (err) {
-  //     console.error("Failed to fetch tasks or task lists", err);
-  //   }
-  // };
 
   const fetchData = async () => {
     try {
