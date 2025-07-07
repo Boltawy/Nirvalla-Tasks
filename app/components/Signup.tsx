@@ -76,8 +76,10 @@ export function Signup({}) {
               className=" absolute z-50 top-0 w-full flex items-top gap-4 px-4  overflow-hidden bg-red-500 text-white rounded-t-lg"
             >
               <CircleAlert size={18} className="mt-1" />
-              <div>
-                <p>Please fix the following errors:</p>
+              <div className="text-sm">
+                <p className="font-semibold">
+                  Please fix the following errors:
+                </p>
                 <ul className="list-disc list-inside">
                   <li className="pt-1">
                     {errors.userName?.message ||
