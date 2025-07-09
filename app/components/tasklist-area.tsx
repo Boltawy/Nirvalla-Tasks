@@ -10,6 +10,8 @@ import { Plus } from "lucide-react";
 
 import { baseUrl } from "../constants";
 import { UserContext } from "../context/UserContext";
+import Image from "next/image";
+import NoWrap from "./NoWrap";
 
 export default function TaskListArea() {
   // const [activeTask, setActiveTask] = useState<Task | null>(null);
@@ -47,13 +49,53 @@ export default function TaskListArea() {
 
   return (
     <>
-      {taskLists.map((tasklist: TaskList) => (
-        <TaskColumn key={tasklist._id} tasklist={tasklist} />
-      ))}
-      <Button variant="outline" onClick={() => addTaskList("New Tasklist")}>
-        <Plus />
-        Add tasklist
-      </Button>
+      {taskLists.length > 0 ? (
+        <>
+          <div className=" h-screen bg-white flex flex-col flex-1 overflow-auto">
+            <div className="flex items-start gap-6 p-6 pt-24 min-w-max h-full overflow-x-auto">
+              {taskLists.map((tasklist: TaskList) => (
+                <TaskColumn key={tasklist._id} tasklist={tasklist} />
+              ))}
+              <Button
+                variant="outline"
+                onClick={() => addTaskList("New Tasklist")}
+              >
+                <Plus />
+                Add tasklist
+              </Button>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="relative w-full h-screen flex flex-col justify-center gap-2 px-8 items-center overflow-hidden">
+            <Image
+              src="/Task-bro.svg"
+              className="opacity-70"
+              alt="nirvalla logo"
+              width={400}
+              height={400}
+            />
+            <h3 className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl pb-1 text-gray-600 text-center">
+              Welcome to{" "}
+              <NoWrap className="text-gray-800">Nirvalla Tasks</NoWrap>
+            </h3>
+            <h4 className="pb-6 text-gray-700">
+              Start organizing your life by creating your first Tasklist.
+            </h4>
+            <Button variant="outline" size="lg" onClick={() => addTaskList("Inbox")}>
+              <Plus />
+              Add tasklist
+            </Button>
+            <a
+              href="https://storyset.com/work"
+              className="absolute bottom-5 right-5 text-gray-300 hidden md:block"
+            >
+              illustration by Storyset
+            </a>
+          </div>
+        </>
+      )}
     </>
   );
 }
