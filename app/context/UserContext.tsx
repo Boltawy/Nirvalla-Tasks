@@ -1,4 +1,5 @@
 "use client";
+import { tokenPayload } from "@/types/types";
 import { jwtDecode } from "jwt-decode";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
@@ -8,11 +9,8 @@ interface UserContextType {
   userName: string | null;
   // isLoading: boolean | null;
   setToken: React.Dispatch<React.SetStateAction<string | null>>;
-}
-
-interface tokenPayload {
-  _id: string;
-  userName: string;
+  setUserName: React.Dispatch<React.SetStateAction<string | null>>;
+  setUserId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export const UserContext = createContext<UserContextType | undefined>(
@@ -32,14 +30,18 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       setToken(savedToken);
       const { _id: userId, userName }: tokenPayload = jwtDecode(savedToken);
       setUserId(userId);
+      localStorage.setItem("userId", userId);
       setUserName(userName);
+      localStorage.setItem("userName", userName);
       console.log(savedToken);
     }
     // setIsLoading(false);
   }, []);
 
   return (
-    <UserContext.Provider value={{ token, setToken, userId, userName }}>
+    <UserContext.Provider
+      value={{ token, setToken, userId, userName, setUserId, setUserName }}
+    >
       {children}
     </UserContext.Provider>
   );

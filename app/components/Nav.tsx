@@ -41,6 +41,7 @@ export default function Nav() {
     setToken(null);
     localStorage.removeItem("token");
     toast.success("Logged out!");
+    window.location.href = "/"
   };
 
   const handleSync = () => {
@@ -91,7 +92,7 @@ export default function Nav() {
                 <TooltipContent arrowPadding={4}>
                   <TooltipArrow className="fill-gray-300"></TooltipArrow>
                   <p>
-                    {token ? "Sync Now" : "Login now to save your progress"}
+                    {token ? "Sync Now" : "Signup now to save your progress"}
                   </p>
                 </TooltipContent>
               </Tooltip>

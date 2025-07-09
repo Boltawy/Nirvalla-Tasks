@@ -70,6 +70,7 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
       userId,
       taskListId: listId,
       parentId: null,
+      subtasks: []
     };
 
     setTaskLists((prev: TaskList[]) =>

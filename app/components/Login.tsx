@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { loginFormData } from "@/types/types";
+import { loginFormData, tokenPayload } from "@/types/types";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { SubmitHandler, useForm } from "react-hook-form";
 import LabelTextCombo from "./LabelTextCombo";
@@ -27,7 +27,7 @@ export function Login({}) {
   const [rerenderCount, setRerenderCount] = useState(0); //for re-rendering when the form error changes.
   const [open, setOpen] = useState(false);
 
-  const { token, setToken } = useContext(UserContext);
+  const { token, setToken, setUserId, setUserName } = useContext(UserContext);
   const {
     register,
     handleSubmit,
@@ -47,8 +47,12 @@ export function Login({}) {
       const res = await axios.post(`${baseUrl}/auth/login`, data);
       console.log(res);
       const token = res.data.data.accessToken;
-      setToken(token);
-      localStorage.setItem("token", token);
+      setToken(token); //TODO Extract logic to saveAndDecodeToken or smthn
+      const { _id: userId, userName }: tokenPayload = jwtDecode(token);
+      setUserId(userId);
+      localStorage.setItem("userId", userId);
+      setUserName(userName);
+      localStorage.setItem("userName", userName);
       setOpen(false);
       toast.success("Successfully logged in!");
       // window.location.href = "/app";

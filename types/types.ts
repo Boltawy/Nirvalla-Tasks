@@ -21,6 +21,7 @@ export interface Task {
   deletedAt: Date | null;
   createdAt?: Date;
   updatedAt?: Date;
+  subtasks?: Task[];
 }
 
 export interface signupFormData {
@@ -34,26 +35,7 @@ export interface loginFormData {
   password: string;
 }
 
-// export interface fetchedTaskList {
-//   _id: string;
-//   title: string;
-//   description?: string;
-//   isDefault: boolean;
-//   deletedAt: Date | null;
-//   createdAt?: Date;
-//   updatedAt?: Date;
-//   userId: string;
-// }
-
-// export interface fetchedTask {
-//   _id: string;
-//   title: string;
-//   description?: string;
-//   taskListId: string;
-//   parentId?: string | null;
-//   completedAt: Date | null;
-//   deletedAt: Date | null;
-//   createdAt?: Date;
-//   updatedAt?: Date;
-//   userId: string;
-// }
+export interface tokenPayload {
+  _id: string;
+  userName: string;
+}
