@@ -12,6 +12,7 @@ import { baseUrl } from "../constants";
 import { UserContext } from "../context/UserContext";
 import Image from "next/image";
 import NoWrap from "./NoWrap";
+import { interFont } from "../layout";
 
 export default function TaskListArea() {
   // const [activeTask, setActiveTask] = useState<Task | null>(null);
@@ -51,7 +52,7 @@ export default function TaskListArea() {
     <>
       {taskLists.length > 0 ? (
         <>
-          <div className=" h-screen bg-white flex flex-col flex-1 overflow-auto">
+          <div className=" h-screen bg-gray-100 flex flex-col flex-1 overflow-auto">
             <div className="flex items-start gap-6 p-6 pt-24 min-w-max h-full overflow-x-auto">
               {taskLists.map((tasklist: TaskList) => (
                 <TaskColumn key={tasklist._id} tasklist={tasklist} />
@@ -68,22 +69,28 @@ export default function TaskListArea() {
         </>
       ) : (
         <>
-          <div className="relative w-full h-screen flex flex-col justify-center gap-2 px-8 items-center overflow-hidden">
+          <div className="relative w-full h-screen flex flex-col justify-center gap-2 px-8 items-center overflow-hidden bg-gray-100">
             <Image
               src="/Task-bro.svg"
-              className="opacity-70"
+              className="opacity-80"
               alt="nirvalla logo"
               width={400}
               height={400}
             />
-            <h3 className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl pb-1 text-gray-600 text-center">
-              Welcome to{" "}
-              <NoWrap className="text-gray-800">Nirvalla Tasks</NoWrap>
+            <h3
+              className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl pb-1 text-gray-700 text-center"
+              // style={{ fontFamily: interFont.style.fontFamily }}
+            >
+              Welcome to <NoWrap className="">Nirvalla Tasks</NoWrap>
             </h3>
-            <h4 className="pb-6 text-gray-700">
+            <h4 className="pb-6 text-gray-600">
               Start organizing your life by creating your first Tasklist.
-            </h4>
-            <Button variant="outline" size="lg" onClick={() => addTaskList("Inbox")}>
+            </h4>{" "}
+            <Button
+              variant="medieum"
+              size="lg"
+              onClick={() => addTaskList("Inbox")} //TODO assign list as default, Need to change context handler
+            >
               <Plus />
               Add tasklist
             </Button>

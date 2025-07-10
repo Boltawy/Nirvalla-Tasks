@@ -48,6 +48,7 @@ export function Login({}) {
       console.log(res);
       const token = res.data.data.accessToken;
       setToken(token); //TODO Extract logic to saveAndDecodeToken or smthn
+      localStorage.setItem("token", token);
       const { _id: userId, userName }: tokenPayload = jwtDecode(token);
       setUserId(userId);
       localStorage.setItem("userId", userId);

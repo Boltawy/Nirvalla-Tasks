@@ -33,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={`${interFont.className} ${playfairFont.className}`}>
         <Toaster position="top-center" className="z-[200]" richColors={true} />
         <UserProvider>
           <TaskListProvider>

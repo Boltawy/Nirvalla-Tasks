@@ -38,12 +38,12 @@ const Hero = () => {
 
         {/* Main headline */}
         <h2
-          className="text-6xl sm:text-7xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight"
+          className="text-6xl sm:text-7xl lg:text-7xl font-bold text-gray-900 mb-6 leading-[3.5rem]"
           style={{ fontFamily: playfairFont.style.fontFamily }}
         >
           Organize <NoWrap>your life</NoWrap>,
           <br />
-          <span className="italic">one task at a time.</span>
+          <span className="italic text-gray-700">one task at a time.</span>
         </h2>
 
         {/* Subheadline */}

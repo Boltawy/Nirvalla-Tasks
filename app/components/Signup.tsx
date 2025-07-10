@@ -56,7 +56,7 @@ export function Signup({}) {
     <>
       <Dialog open={open} onOpenChange={() => handleOpenChange()}>
         <DialogTrigger asChild>
-          <Button variant="default">Signup</Button>
+          <Button variant="default" className="bg-gray-700 hover:gray-800">Signup</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           {Object.keys(errors).length > 0 && (

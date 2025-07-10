@@ -10,6 +10,22 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  .font-inter {
+    font-family: var(--font-inter);
+  }
+
+  .font-playfair {
+    font-family: var(--font-playfair);
+  }
+
+
+
+}
+
+@theme inline {
+  --font-inter: var(--font-inter);
+  --font-playfair: var(--font-playfair);
 }
 
 @layer base {
@@ -20,7 +36,7 @@ body {
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
+    --primary: 0 0% 20%;
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
@@ -48,6 +64,7 @@ body {
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -88,6 +105,7 @@ body {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -96,3 +114,10 @@ body {
 .button-secondary {
   @apply bg-gray-50 text-black border hover:bg-gray-100 !important;
 }
+
+/* TODO Experiment with background texture */
+/* .plusbackground { 
+  background-color: #ececec;
+  background-size: 7%;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC55' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+} */
