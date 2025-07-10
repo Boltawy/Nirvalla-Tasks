@@ -9,14 +9,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { loginFormData, tokenPayload } from "@/types/types";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { SubmitHandler, useForm } from "react-hook-form";
-import LabelTextCombo from "./LabelTextCombo";
 import FloatingLabelInput from "./FloatingLabelInput";
-import { useContext, useEffect, useState } from "react";
-import { CircleAlert } from "lucide-react";
+import { useContext, useState } from "react";
+import { CircleAlert, Loader2 } from "lucide-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import { baseUrl } from "../constants";
@@ -26,8 +24,9 @@ import { UserContext } from "../context/UserContext";
 export function Login({}) {
   const [rerenderCount, setRerenderCount] = useState(0); //for re-rendering when the form error changes.
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { token, setToken, setUserId, setUserName } = useContext(UserContext);
+  const { setToken, setUserId, setUserName } = useContext(UserContext);
   const {
     register,
     handleSubmit,
@@ -43,9 +42,9 @@ export function Login({}) {
   const onSubmit: SubmitHandler<loginFormData> = async (
     data: loginFormData
   ) => {
+    setIsLoading(true);
     try {
       const res = await axios.post(`${baseUrl}/auth/login`, data);
-      console.log(res);
       const token = res.data.data.accessToken;
       setToken(token); //TODO Extract logic to saveAndDecodeToken or smthn
       localStorage.setItem("token", token);
@@ -56,11 +55,25 @@ export function Login({}) {
       localStorage.setItem("userName", userName);
       setOpen(false);
       toast.success("Successfully logged in!");
-      // window.location.href = "/app";
+      setTimeout(() => {
+        window.location.href = "/app";
+      }, 1500);
     } catch (error) {
-      toast.error(
-        `${error.response.data.status}: ${error.response.data.message}`
-      );
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          toast.error(
+            `${error.response?.data.status}: ${error.response?.data.message}`
+          );
+        } else {
+          toast.error(
+            "An unknown error occurred, Maybe check your internet connection?"
+          );
+        }
+      } else {
+        toast.error("An unknown error occurred, try again later");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -70,6 +83,11 @@ export function Login({}) {
           <Button variant="secondary">Login</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
+          {isLoading && (
+            <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center h-full  backdrop-blur-[2px] bg-gradient-to-br from-gray-400/10 via-gray-400/30 to-gray-400/10 z-50">
+              <Loader2 className="animate-spin" size={32} />
+            </div>
+          )}
           {Object.keys(errors).length > 0 && (
             <motion.div
               key={rerenderCount}

@@ -17,7 +17,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import LabelTextCombo from "./LabelTextCombo";
 import FloatingLabelInput from "./FloatingLabelInput";
 import { useEffect, useState } from "react";
-import { CircleAlert, CircleSmall } from "lucide-react";
+import { CircleAlert, CircleSmall, Loader2 } from "lucide-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import axios from "axios";
@@ -25,6 +25,7 @@ import { baseUrl } from "../constants";
 export function Signup({}) {
   const [rerenderCount, setRerenderCount] = useState(0); //for re-rendering when the form error changes.
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -41,14 +42,27 @@ export function Signup({}) {
   const onSubmit: SubmitHandler<signupFormData> = async (
     data: signupFormData
   ) => {
+    setIsLoading(true);
     try {
       const res = await axios.post(`${baseUrl}/auth/signup`, data);
       setOpen(false);
       toast.success("Successfully signed up!");
     } catch (error) {
-      toast.error(
-        `${error.response.data.status}: ${error.response.data.message}`
-      );
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          toast.error(  
+            `${error.response?.data.status}: ${error.response?.data.message}`
+          );
+        } else {
+          toast.error(
+            "An unknown error occurred, Maybe check your internet connection?"
+          );
+        }
+      } else {
+        toast.error("An unknown error occurred, try again later");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -56,9 +70,16 @@ export function Signup({}) {
     <>
       <Dialog open={open} onOpenChange={() => handleOpenChange()}>
         <DialogTrigger asChild>
-          <Button variant="default" className="bg-gray-700 hover:gray-800">Signup</Button>
+          <Button variant="default" className="bg-gray-700 hover:gray-800">
+            Signup
+          </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
+          {isLoading && (
+            <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center h-full  backdrop-blur-[2px] bg-gradient-to-br from-gray-400/10 via-gray-400/30 to-gray-400/10 z-50">
+              <Loader2 className="animate-spin" size={32} />
+            </div>
+          )}
           {Object.keys(errors).length > 0 && (
             <motion.div
               key={rerenderCount}

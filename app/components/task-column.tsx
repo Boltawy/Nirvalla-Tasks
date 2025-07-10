@@ -28,7 +28,7 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
   const [listNameValue, setListNameValue] = useState(tasklist.title);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && newTaskTitle.trim() !== "") {
       addTask(tasklist._id, newTaskTitle);
       setNewTaskTitle("");
     }
@@ -111,7 +111,7 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
             onChange={(e) => setNewTaskTitle(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder="Add a task"
-            className="border-none shadow-none text-sm placeholder:text-gray-400 focus-visible:ring-0 px-0"
+            className="px-4 py-2 border-none shadow-none text-sm placeholder:text-gray-400 focus-visible:ring-0"
           />
         </div>
       </div>
@@ -128,7 +128,6 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
         {/* Completed Tasks */}
         <div className="mt-6">
           <div className="text-xs font-medium text-gray-500 mb-2 px-1">
-            Completed
             {/* ({tasklist.completedTasks.length}) */}
           </div>
           {tasklist.tasks.map(

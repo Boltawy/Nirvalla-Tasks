@@ -38,12 +38,14 @@ const Hero = () => {
 
         {/* Main headline */}
         <h2
-          className="text-6xl sm:text-7xl lg:text-7xl font-bold text-gray-900 mb-6 leading-[3.5rem]"
+          className="text-7xl sm:text-7xl lg:text-7xl font-bold text-gray-900 mb-6 !leading-[4rem] sm:!leading-[4rem]"
           style={{ fontFamily: playfairFont.style.fontFamily }}
         >
           Organize <NoWrap>your life</NoWrap>,
           <br />
-          <span className="italic text-gray-700">one task at a time.</span>
+          <span className=" inline-block italic text-gray-700 pt-2 md:pt-0 text-6xl sm:text-6xl lg:text-6xl h-12 !leading-[3.25rem]">
+            one task <NoWrap>at a time</NoWrap>.
+          </span>
         </h2>
 
         {/* Subheadline */}
@@ -62,13 +64,13 @@ const Hero = () => {
           >
             <Link href="/app">Start Using Nirvalla</Link>
           </Button>
-          <Button
+          {/* <Button
             variant="outline"
             size="lg"
             className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-3 text-lg font-medium transition-colors"
           >
             Learn More
-          </Button>
+          </Button> */}
         </div>
 
         {/* Tagline */}

@@ -6,7 +6,7 @@ import { RefreshCcw } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { tasklistContext } from "../context/tasklist-context";
 import axios from "axios";
 import { baseUrl } from "../constants";
@@ -34,18 +34,19 @@ import { UserContext } from "../context/UserContext";
 import { toast } from "sonner";
 
 export default function Nav() {
-  const { token, setToken, userName } = useContext(UserContext);
+  const { token, setToken, userName, userIsLoading } = useContext(UserContext);
   const { taskLists } = useContext(tasklistContext);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   const handleLogout = () => {
     setToken(null);
     localStorage.removeItem("token");
     toast.success("Logged out!");
-    window.location.href = "/"
+    window.location.href = "/";
   };
 
   const handleSync = () => {
-    console.log(taskLists);
+    setIsSyncing(true);
     axios
       .post(
         `${baseUrl}/sync`,
@@ -53,12 +54,13 @@ export default function Nav() {
         { headers: { Authorization: `Bearer ${token}` } }
       )
       .then((res) => {
-        console.log(res);
         toast.success("Synced successfully!");
       })
       .catch((err) => {
-        console.error(err);
         toast.error("Failed to sync!");
+      })
+      .finally(() => {
+        setIsSyncing(false);
       });
   };
   const path = usePathname();
@@ -86,7 +88,10 @@ export default function Nav() {
                   }
                   onClick={token ? handleSync : null}
                 >
-                  <RefreshCcw size={14} />
+                  <RefreshCcw
+                    size={14}
+                    className={isSyncing ? "animate-spin-counter" : ""}
+                  />
                   {/* Sync Now */}
                 </TooltipTrigger>
                 <TooltipContent arrowPadding={4}>
@@ -98,7 +103,7 @@ export default function Nav() {
               </Tooltip>
             </TooltipProvider>
           )}
-          {path != "/app" && (
+          {path != "/app" && !userIsLoading && !token && (
             <li>
               <Link
                 href="/app"
@@ -108,7 +113,11 @@ export default function Nav() {
               </Link>
             </li>
           )}
-          {token ? (
+          {userIsLoading ? (
+            <li>
+              <p>Loading...</p>
+            </li>
+          ) : token ? (
             <>
               <li>
                 <p>Welcome, {userName}</p>

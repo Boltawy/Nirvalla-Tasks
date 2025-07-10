@@ -7,10 +7,11 @@ interface UserContextType {
   token: string | null;
   userId: string | null;
   userName: string | null;
-  // isLoading: boolean | null;
+  userIsLoading: boolean | null;
   setToken: React.Dispatch<React.SetStateAction<string | null>>;
   setUserName: React.Dispatch<React.SetStateAction<string | null>>;
   setUserId: React.Dispatch<React.SetStateAction<string | null>>;
+  setUserIsLoading: React.Dispatch<React.SetStateAction<boolean | null>>;
 }
 
 export const UserContext = createContext<UserContextType | undefined>(
@@ -23,7 +24,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const [token, setToken] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
-  // const [isLoading, setIsLoading] = useState<boolean | null>(false); //? ??
+  const [userIsLoading, setUserIsLoading] = useState<boolean | null>(true);
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     if (savedToken) {
@@ -35,12 +36,21 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       localStorage.setItem("userName", userName);
       console.log(savedToken);
     }
-    // setIsLoading(false);
+    setUserIsLoading(false);
   }, []);
 
   return (
     <UserContext.Provider
-      value={{ token, setToken, userId, userName, setUserId, setUserName }}
+      value={{
+        token,
+        setToken,
+        userId,
+        userName,
+        setUserId,
+        setUserName,
+        userIsLoading,
+        setUserIsLoading,
+      }}
     >
       {children}
     </UserContext.Provider>
