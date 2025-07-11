@@ -58,12 +58,14 @@ const Hero = () => {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button
-            size="lg"
-            className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-3 text-lg font-medium transition-colors"
-          >
-            <Link href="/app">Start Using Nirvalla</Link>
-          </Button>
+          <Link href="/app">
+            <Button
+              size="lg"
+              className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-3 text-lg font-medium transition-colors"
+            >
+              Start Using Nirvalla
+            </Button>
+          </Link>
           {/* <Button
             variant="outline"
             size="lg"

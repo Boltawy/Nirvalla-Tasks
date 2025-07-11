@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useContext, useEffect, useState } from "react";
-import { Plus, MoreVertical, Trash2, Edit2 } from "lucide-react";
+import { Plus, MoreVertical, Trash2, Edit2, Pin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -47,30 +47,38 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
   return (
     <div className="w-80 bg-gray-50 rounded-lg border border-gray-200 flex flex-col">
       {/* Column Header */}
-      <div className="p-4 border-b border-gray-200 bg-white rounded-t-lg cursor-grab active:cursor-grabbing">
+      <div
+        className={
+          "p-4 border-b border-gray-200 bg-white rounded-t-lg " +
+          (tasklist.isDefault ? " " : " cursor-grab active:cursor-grabbing")
+        }
+      >
         <div className="flex items-center justify-between">
-          {editingListName ? (
-            <Input
-              value={listNameValue}
-              onChange={(e) => setListNameValue(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") saveListName();
-                if (e.key === "Escape") cancelListNameEdit();
-              }}
-              onBlur={saveListName}
-              className="text-lg font-medium border-none shadow-none p-0 h-auto focus-visible:ring-0"
-              autoFocus
-            />
-          ) : (
-            <h3
-              className="text-lg font-medium text-gray-900 cursor-pointer hover:text-blue-600"
-              onClick={() => {
-                if (!tasklist.isDefault) setEditingListName(true);
-              }}
-            >
-              {tasklist.title}
-            </h3>
-          )}
+          <div className="flex items-baseline gap-2">
+            {tasklist.isDefault && <Pin size={14} className="rotate-45" />}
+            {editingListName ? (
+              <Input
+                value={listNameValue}
+                onChange={(e) => setListNameValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") saveListName();
+                  if (e.key === "Escape") cancelListNameEdit();
+                }}
+                onBlur={saveListName}
+                className="text-lg font-medium border-none shadow-none p-0 h-auto focus-visible:ring-0"
+                autoFocus
+              />
+            ) : (
+              <h3
+                className="text-lg font-medium text-gray-900 cursor-pointer hover:text-blue-600"
+                onClick={() => {
+                  if (!tasklist.isDefault) setEditingListName(true);
+                }}
+              >
+                {tasklist.title}
+              </h3>
+            )}
+          </div>
 
           {!tasklist.isDefault && (
             <DropdownMenu>

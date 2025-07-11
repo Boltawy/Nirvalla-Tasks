@@ -68,10 +68,7 @@ export default function TaskListArea() {
                   {taskLists.map((tasklist: TaskList) => (
                     <TaskColumn key={tasklist._id} tasklist={tasklist} />
                   ))}
-                  <Button
-                    variant="outline"
-                    onClick={() => addTaskList("New Tasklist")}
-                  >
+                  <Button variant="outline" onClick={() => addTaskList()}>
                     <Plus />
                     Add tasklist
                   </Button>
@@ -100,7 +97,7 @@ export default function TaskListArea() {
                 <Button
                   variant="medieum"
                   size="lg"
-                  onClick={() => addTaskList("Inbox")} //TODO assign list as default, Need to change context handler
+                  onClick={() => addTaskList({ isDefault: true })} //TODO assign list as default, Need to change context handler
                 >
                   <Plus />
                   Add tasklist

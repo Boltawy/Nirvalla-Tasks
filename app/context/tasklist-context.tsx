@@ -9,7 +9,7 @@ type TaskListContextType = {
   // tasks: Task[];
   setTaskLists: React.Dispatch<React.SetStateAction<TaskList[]>>;
   // setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
-  addTaskList: (title?: string) => void;
+  addTaskList: (tasklist?: Partial<TaskList>) => void;
   updateTaskListName: (listId: string, title: string) => void;
   toggleTask: (task: Task, tasklistId: string) => void;
   deleteTaskList: (listId: string) => void;
@@ -34,12 +34,12 @@ const tasklistContext = createContext<TaskListContextType>(
 const TaskListProvider = ({ children }: TaskListProviderProps) => {
   const [taskLists, setTaskLists] = useState<TaskList[]>([]);
   const { userId, userName } = useContext(UserContext);
-  const addTaskList = (title: string) => {
+  const addTaskList = (tasklist?: Partial<TaskList>) => {
     const newList: TaskList = {
       _id: Date.now().toString(),
-      title,
+      title: tasklist?.isDefault ? "Inbox" : tasklist?.title || "New Tasklist",
       userId,
-      isDefault: false,
+      isDefault: tasklist?.isDefault || false,
       deletedAt: null,
       tasks: [],
     };
@@ -70,7 +70,7 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
       userId,
       taskListId: listId,
       parentId: null,
-      subtasks: []
+      subtasks: [],
     };
 
     setTaskLists((prev: TaskList[]) =>
