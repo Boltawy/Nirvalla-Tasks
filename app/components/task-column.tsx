@@ -26,6 +26,7 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [editingListName, setEditingListName] = useState(false);
   const [listNameValue, setListNameValue] = useState(tasklist.title);
+  const [canPlaySound, setCanPlaySound] = useState(false);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && newTaskTitle.trim() !== "") {
@@ -129,7 +130,13 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
         {tasklist.tasks.map(
           (task) =>
             !task.completedAt && (
-              <TaskItem key={task._id} task={task} listId={tasklist._id} />
+              <TaskItem
+                key={task._id}
+                task={task}
+                listId={tasklist._id}
+                canPlaySound={canPlaySound}
+                setCanPlaySound={setCanPlaySound}
+              />
             )
         )}
 
@@ -141,7 +148,13 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
           {tasklist.tasks.map(
             (task) =>
               task.completedAt && (
-                <TaskItem key={task._id} task={task} listId={tasklist._id} />
+                <TaskItem
+                  key={task._id}
+                  task={task}
+                  listId={tasklist._id}
+                  canPlaySound={canPlaySound}
+                  setCanPlaySound={setCanPlaySound}
+                />
               )
           )}
         </div>

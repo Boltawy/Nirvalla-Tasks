@@ -7,7 +7,6 @@ import axios from "axios";
 import { tasklistContext } from "../context/tasklist-context";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-
 import { baseUrl } from "../constants";
 import { UserContext } from "../context/UserContext";
 import Image from "next/image";
@@ -16,7 +15,7 @@ import { interFont } from "../layout";
 
 export default function TaskListArea() {
   // const [activeTask, setActiveTask] = useState<Task | null>(null);
-  const [doneFetching, setDoneFetching] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
 
   //TODO Implement login
 
@@ -31,7 +30,7 @@ export default function TaskListArea() {
   } = useContext(tasklistContext);
 
   const fetchData = async () => {
-    setDoneFetching(false);
+    setIsFetching(true);
     try {
       const {
         data: { data },
@@ -45,9 +44,25 @@ export default function TaskListArea() {
       console.log(token);
       console.error("Failed to fetch tasks", err);
     } finally {
-      setDoneFetching(true);
+      setIsFetching(false);
     }
   };
+
+  // useEffect(() => {
+  //   const handleClick = () => {
+  //     const audio = new Audio("/task-check.mp3");
+  //     audio.volume = 1;
+  //     audio
+  //       .play()
+  //       .then(() => console.log("✅ Played sound"))
+  //       .catch((err) => console.error("❌ Error playing sound:", err));
+
+  //   };
+
+  //   window.addEventListener("click", handleClick);
+
+  //   return () => window.removeEventListener("click", handleClick);
+  // }, []);
 
   useEffect(() => {
     if (token && !userIsLoading) fetchData();
@@ -55,7 +70,7 @@ export default function TaskListArea() {
 
   return (
     <>
-      {userIsLoading || !doneFetching ? (
+      {userIsLoading || isFetching ? (
         <div className="relative w-full h-screen flex flex-col justify-center gap-2 px-8 items-center overflow-hidden bg-gray-100">
           <p>Loading...</p>
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   Plus,
   MoreVertical,
@@ -36,6 +36,8 @@ interface TaskItemProps {
   parentId?: string;
   depth?: number;
   compact?: boolean;
+  canPlaySound?: boolean;
+  setCanPlaySound?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function TaskItem({
@@ -44,9 +46,12 @@ export function TaskItem({
   parentId,
   depth = 0,
   compact = false,
+  canPlaySound,
+  setCanPlaySound,
 }: TaskItemProps) {
   const { toggleTask, updateTask, deleteTask } = useContext(tasklistContext);
-  
+  const audioRef = useRef(null);
+
   const [editingTask, setEditingTask] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
 
@@ -65,9 +70,21 @@ export function TaskItem({
     setEditTitle(task.title);
   };
 
+  const handleCheckTask = () => {
+    setCanPlaySound(true);
+    toggleTask(task, listId);
+  };
+  useEffect(() => {
+    console.log(canPlaySound);
+    if (task.completedAt && canPlaySound) {
+      audioRef.current.volume = 0.3;
+      audioRef.current?.play();
+    }
+  }, []);
 
   return (
     <div className={cn("space-y-1", depth > 0 && "ml-4")}>
+      <audio ref={audioRef} src="/task-check.mp3" preload="auto" />
       <div
         className={cn(
           "group transition-all duration-200 ",
@@ -105,7 +122,7 @@ export function TaskItem({
               <div className="flex items-center gap-1 flex-shrink-0">
                 <Checkbox
                   checked={task.completedAt !== null}
-                  onCheckedChange={() => toggleTask(task, listId)}
+                  onCheckedChange={() => handleCheckTask()}
                   className="flex-shrink-0"
                 />
               </div>
