@@ -51,6 +51,8 @@ export function TaskItem({
 }: TaskItemProps) {
   const { toggleTask, updateTask, deleteTask } = useContext(tasklistContext);
   const audioRef = useRef(null);
+  const audioRef2 = useRef(null);
+  const checkSounds = [audioRef, audioRef2];
 
   const [editingTask, setEditingTask] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
@@ -75,16 +77,18 @@ export function TaskItem({
     toggleTask(task, listId);
   };
   useEffect(() => {
-    console.log(canPlaySound);
     if (task.completedAt && canPlaySound) {
       audioRef.current.volume = 0.3;
-      audioRef.current?.play();
+      audioRef2.current.volume = 0.3;
+      const selectedSound = Math.floor(Math.random() * checkSounds.length);
+      checkSounds[selectedSound].current.play();
     }
   }, []);
 
   return (
     <div className={cn("space-y-1", depth > 0 && "ml-4")}>
       <audio ref={audioRef} src="/task-check.mp3" preload="auto" />
+      <audio ref={audioRef2} src="/task-check2.mp3" preload="auto" />
       <div
         className={cn(
           "group transition-all duration-200 ",
