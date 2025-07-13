@@ -10,18 +10,7 @@ import { useContext, useEffect, useState } from "react";
 import { tasklistContext } from "../context/TasklistContext";
 import axios from "axios";
 import { baseUrl } from "../constants";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/app/global-components/ui/dialog";
-import { Input } from "@/app/global-components/ui/input";
-import { Label } from "@/app/global-components/ui/label";
+
 import {
   Tooltip,
   TooltipContent,
@@ -78,9 +67,9 @@ export default function Nav() {
           </Link>
         </div>
         <ul className="flex justify-between items-center gap-4">
-          {path == "/app" && (
+          {path == "/tasks-app" && (
             <TooltipProvider>
-              <Tooltip>
+              <Tooltip delayDuration={200}>
                 <TooltipTrigger
                   className={
                     "flex items-center gap-1 px-4 py-2 mr-8 border rounded-sm border-gray-300 hover:border-gray-400 transition-all " +
@@ -103,10 +92,10 @@ export default function Nav() {
               </Tooltip>
             </TooltipProvider>
           )}
-          {path != "/app" && !userIsLoading && !token && (
+          {path != "/tasks-app" && !userIsLoading && !token && (
             <li>
               <Link
-                href="/app"
+                href="/tasks-app"
                 className="underline-offset-2 underline dark:text-white"
               >
                 Try now
