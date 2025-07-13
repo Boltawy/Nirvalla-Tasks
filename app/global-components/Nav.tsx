@@ -1,13 +1,13 @@
 "use client";
 
 import { Signup } from "./Signup";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/global-components/ui/button";
 import { RefreshCcw } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import { tasklistContext } from "../context/tasklist-context";
+import { tasklistContext } from "../context/TasklistContext";
 import axios from "axios";
 import { baseUrl } from "../constants";
 import {
@@ -19,15 +19,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/app/global-components/ui/dialog";
+import { Input } from "@/app/global-components/ui/input";
+import { Label } from "@/app/global-components/ui/label";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/app/global-components/ui/tooltip";
 import { TooltipArrow } from "@radix-ui/react-tooltip";
 import { Login } from "./Login";
 import { UserContext } from "../context/UserContext";

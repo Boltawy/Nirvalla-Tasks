@@ -1,11 +1,11 @@
 "use client";
 
-import { TaskColumn } from "./task-column";
+import { TaskColumn } from "./TasklistColumn";
 import { useContext, useEffect, useState } from "react";
-import type { TaskList, Task } from "../../types/types";
+import type { TaskList, Task } from "../../types";
 import axios from "axios";
-import { tasklistContext } from "../context/tasklist-context";
-import { Button } from "@/components/ui/button";
+import { tasklistContext } from "../context/TasklistContext";
+import { Button } from "@/app/global-components/ui/button";
 import { Plus } from "lucide-react";
 import { baseUrl } from "../constants";
 import { UserContext } from "../context/UserContext";
@@ -14,11 +14,6 @@ import NoWrap from "./NoWrap";
 import { interFont } from "../layout";
 
 export default function TaskListArea() {
-  // const [activeTask, setActiveTask] = useState<Task | null>(null);
-  const [isFetching, setIsFetching] = useState(false);
-
-  //TODO Implement login
-
   const { token, userName, userIsLoading } = useContext(UserContext);
 
   const {
@@ -28,6 +23,8 @@ export default function TaskListArea() {
     updateTaskListName,
     deleteTaskList,
   } = useContext(tasklistContext);
+
+  const [isFetching, setIsFetching] = useState(false);
 
   const fetchData = async () => {
     setIsFetching(true);
@@ -47,22 +44,6 @@ export default function TaskListArea() {
       setIsFetching(false);
     }
   };
-
-  // useEffect(() => {
-  //   const handleClick = () => {
-  //     const audio = new Audio("/task-check.mp3");
-  //     audio.volume = 1;
-  //     audio
-  //       .play()
-  //       .then(() => console.log("✅ Played sound"))
-  //       .catch((err) => console.error("❌ Error playing sound:", err));
-
-  //   };
-
-  //   window.addEventListener("click", handleClick);
-
-  //   return () => window.removeEventListener("click", handleClick);
-  // }, []);
 
   useEffect(() => {
     if (token && !userIsLoading) fetchData();

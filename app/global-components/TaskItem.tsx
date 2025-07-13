@@ -3,22 +3,19 @@
 import type React from "react";
 import { useContext, useEffect, useRef, useState } from "react";
 import {
-  Plus,
   MoreVertical,
   Trash2,
-  ChevronRight,
-  ChevronDown,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/app/global-components/ui/button";
+import { Input } from "@/app/global-components/ui/input";
+import { Textarea } from "@/app/global-components/ui/textarea";
+import { Checkbox } from "@/app/global-components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/app/global-components/ui/dropdown-menu";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useDroppable } from "@dnd-kit/core";
@@ -27,8 +24,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { cn } from "@/lib/utils";
-import type { Task } from "../../types/types";
-import { tasklistContext } from "../context/tasklist-context";
+import type { Task } from "../../types";
+import { tasklistContext } from "../context/TasklistContext";
 
 interface TaskItemProps {
   task: Task;

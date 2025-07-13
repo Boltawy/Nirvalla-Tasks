@@ -1,6 +1,6 @@
 "use client";
 
-import { Task, TaskList } from "@/types/types";
+import { Task, TaskList } from "@/types";
 import { createContext, useContext, useState } from "react";
 import { UserContext } from "./UserContext";
 

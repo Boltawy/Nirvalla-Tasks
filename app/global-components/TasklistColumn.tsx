@@ -3,17 +3,17 @@
 import type React from "react";
 import { useContext, useEffect, useState } from "react";
 import { Plus, MoreVertical, Trash2, Edit2, Pin } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/app/global-components/ui/button";
+import { Input } from "@/app/global-components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import type { TaskList, Task } from "../../types/types";
-import { TaskItem } from "./task-item";
-import { tasklistContext } from "../context/tasklist-context";
+} from "@/app/global-components/ui/dropdown-menu";
+import type { TaskList, Task } from "../../types";
+import { TaskItem } from "./TaskItem";
+import { tasklistContext } from "../context/TasklistContext";
 
 interface TaskColumnProps {
   tasklist: TaskList;

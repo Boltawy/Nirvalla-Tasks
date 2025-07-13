@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/global-components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,9 +8,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { signupFormData } from "@/types/types";
+} from "@/app/global-components/ui/dialog";
+import { Input } from "@/app/global-components/ui/input";
+import { signupFormData } from "@/types";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Label } from "@radix-ui/react-label";
 import { SubmitHandler, useForm } from "react-hook-form";

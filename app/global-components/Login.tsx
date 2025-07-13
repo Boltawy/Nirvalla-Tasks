@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/global-components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,8 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { loginFormData, tokenPayload } from "@/types/types";
+} from "@/app/global-components/ui/dialog";
+import { loginFormData, tokenPayload } from "@/types";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { SubmitHandler, useForm } from "react-hook-form";
 import FloatingLabelInput from "./FloatingLabelInput";

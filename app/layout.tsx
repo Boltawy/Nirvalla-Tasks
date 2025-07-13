@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Playfair, Inter } from "next/font/google";
 import "./globals.css";
-import Nav from "./components/Nav";
-import { TaskListProvider } from "./context/tasklist-context";
+import Nav from "./global-components/Nav";
+import { TaskListProvider } from "./context/TasklistContext";
 import { Toaster } from "sonner";
 import { UserProvider } from "./context/UserContext";
 

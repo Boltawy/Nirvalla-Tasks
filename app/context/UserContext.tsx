@@ -1,5 +1,5 @@
 "use client";
-import { tokenPayload } from "@/types/types";
+import { tokenPayload } from "@/types";
 import { jwtDecode } from "jwt-decode";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
