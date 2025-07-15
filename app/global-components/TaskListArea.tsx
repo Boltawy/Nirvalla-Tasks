@@ -17,6 +17,9 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
 } from "@dnd-kit/core";
 import {
   horizontalListSortingStrategy,
@@ -50,12 +53,14 @@ export default function TaskListArea() {
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    console.log(event);
     if (event.active.data.current?.type === "tasklist") {
       setActiveTasklist(null);
     }
-
     const { active, over } = event;
+    console.log(over);
+    if (!over) return;
+    if (over.data.current?.tasklist.isDefault === true) return;
+
     if (active.id !== over.id) {
       const oldIndex = tasklistIds.indexOf(active.id as string);
       const newIndex = tasklistIds.indexOf(over.id as string);
@@ -66,6 +71,12 @@ export default function TaskListArea() {
       localStorage.setItem("taskLists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
     }
   };
+
+  const sensors = useSensors(useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 5,
+    },
+  }));
 
   const fetchData = async () => {
     setIsFetching(true);
@@ -105,7 +116,7 @@ export default function TaskListArea() {
         </div>
       ) : (
         <>
-          <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+          <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <SortableContext
               items={tasklistIds}
               strategy={horizontalListSortingStrategy}

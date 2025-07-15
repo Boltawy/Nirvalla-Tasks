@@ -87,20 +87,18 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
     >
       {/* Column Header */}
       <div
+        {...attributes}
+        {...listeners}
         className={
-          "p-4 border-b border-gray-200 bg-white rounded-t-lg flex justify-between items-center gap-2 " +
-          (tasklist.isDefault ? " " : "")
+          "p-4 border-b border-gray-200 bg-white rounded-t-lg flex justify-between items-center gap-2 " 
+          // (isDragging && "cursor-grab active:cursor-grabbing")
         }
       >
         <div className="flex items-center gap-2">
           {tasklist.isDefault ? (
             <Pin size={14} className="rotate-45" />
           ) : (
-            <GripVertical
-              {...attributes}
-              {...listeners}
-              className="h-4 w-4 cursor-grab active:cursor-grabbing"
-            />
+            <GripVertical className="h-4 w-4 cursor-grab active:cursor-grabbing" />
           )}
           {editingListName ? (
             <Input
