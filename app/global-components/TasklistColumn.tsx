@@ -2,7 +2,14 @@
 
 import type React from "react";
 import { useContext, useEffect, useState } from "react";
-import { Plus, MoreVertical, Trash2, Edit2, Pin } from "lucide-react";
+import {
+  Plus,
+  MoreVertical,
+  Trash2,
+  Edit2,
+  Pin,
+  GripVertical,
+} from "lucide-react";
 import { Button } from "@/app/global-components/ui/button";
 import { Input } from "@/app/global-components/ui/input";
 import {
@@ -14,12 +21,15 @@ import {
 import type { TaskList, Task } from "../../types";
 import { TaskItem } from "./TaskItem";
 import { tasklistContext } from "../context/TasklistContext";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface TaskColumnProps {
   tasklist: TaskList;
+  className?: string;
 }
 
-export function TaskColumn({ tasklist }: TaskColumnProps) {
+export function TaskColumn({ tasklist, className }: TaskColumnProps) {
   const { addTask, updateTaskListName, deleteTaskList } =
     useContext(tasklistContext);
 
@@ -45,42 +55,78 @@ export function TaskColumn({ tasklist }: TaskColumnProps) {
     setEditingListName(false);
   };
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transition,
+    transform,
+    isDragging,
+  } = useSortable({
+    id: tasklist._id,
+    data: {
+      type: "tasklist",
+      tasklist,
+    },
+  });
+
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
+
   return (
-    <div className="w-80 bg-gray-50 rounded-lg border border-gray-200 flex flex-col">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={
+        "w-80 bg-gray-50 rounded-lg border border-gray-200 flex flex-col " +
+        (isDragging ? "opacity-50 border-4 border-blue-500" : "") +
+        (className ? className : "")
+      }
+    >
       {/* Column Header */}
       <div
         className={
-          "p-4 border-b border-gray-200 bg-white rounded-t-lg " +
-          (tasklist.isDefault ? " " : " cursor-grab active:cursor-grabbing")
+          "p-4 border-b border-gray-200 bg-white rounded-t-lg flex justify-between items-center gap-2 " +
+          (tasklist.isDefault ? " " : "")
         }
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-baseline gap-2">
-            {tasklist.isDefault && <Pin size={14} className="rotate-45" />}
-            {editingListName ? (
-              <Input
-                value={listNameValue}
-                onChange={(e) => setListNameValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") saveListName();
-                  if (e.key === "Escape") cancelListNameEdit();
-                }}
-                onBlur={saveListName}
-                className="text-lg font-medium border-none shadow-none p-0 h-auto focus-visible:ring-0"
-                autoFocus
-              />
-            ) : (
-              <h3
-                className="text-lg font-medium text-gray-900 cursor-pointer hover:text-blue-600"
-                onClick={() => {
-                  if (!tasklist.isDefault) setEditingListName(true);
-                }}
-              >
-                {tasklist.title}
-              </h3>
-            )}
-          </div>
+        <div className="flex items-center gap-2">
+          {tasklist.isDefault ? (
+            <Pin size={14} className="rotate-45" />
+          ) : (
+            <GripVertical
+              {...attributes}
+              {...listeners}
+              className="h-4 w-4 cursor-grab active:cursor-grabbing"
+            />
+          )}
+          {editingListName ? (
+            <Input
+              value={listNameValue}
+              onChange={(e) => setListNameValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") saveListName();
+                if (e.key === "Escape") cancelListNameEdit();
+              }}
+              onBlur={saveListName}
+              className="text-lg font-medium border-none shadow-none p-0 h-auto focus-visible:ring-0"
+              autoFocus
+            />
+          ) : (
+            <h3
+              className="text-lg font-medium text-gray-900 cursor-pointer hover:text-blue-600"
+              onClick={() => {
+                if (!tasklist.isDefault) setEditingListName(true);
+              }}
+            >
+              {tasklist.title}
+            </h3>
+          )}
+        </div>
 
+        <div className="flex">
           {!tasklist.isDefault && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
