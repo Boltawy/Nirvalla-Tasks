@@ -14,7 +14,7 @@ type TaskListContextType = {
   toggleTask: (task: Task, tasklistId: string) => void;
   deleteTaskList: (listId: string) => void;
   addTask: (listId: string, title: string, parentId?: string | null) => void;
-  updateTask: (listId: string, taskId: string, updates: Partial<Task>) => void;
+  updateTask: (listId: string, prevTask: Task, updates: Partial<Task>) => void;
   deleteTask: (
     listId: string,
     taskId: string,

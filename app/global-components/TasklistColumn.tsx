@@ -21,7 +21,12 @@ import {
 import type { TaskList, Task } from "../../types";
 import { TaskItem } from "./TaskItem";
 import { tasklistContext } from "../context/TasklistContext";
-import { useSortable } from "@dnd-kit/sortable";
+import {
+  horizontalListSortingStrategy,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 interface TaskColumnProps {
@@ -80,7 +85,7 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
       ref={setNodeRef}
       style={style}
       className={
-        "w-80 bg-gray-50 rounded-lg border border-gray-200 flex flex-col " +
+        "w-80 max-h-[calc(100vh-8rem)] bg-gray-50 rounded-lg border border-gray-200 flex flex-col " +
         (isDragging ? "opacity-50 border-4 border-blue-500" : "") +
         (className ? className : "")
       }
@@ -90,7 +95,7 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
         {...attributes}
         {...listeners}
         className={
-          "p-4 border-b border-gray-200 bg-white rounded-t-lg flex justify-between items-center gap-2 " 
+          "p-4 border-b border-gray-200 bg-white rounded-t-lg flex justify-between items-center gap-2 "
           // (isDragging && "cursor-grab active:cursor-grabbing")
         }
       >
@@ -171,27 +176,13 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
       {/* Tasks */}
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
         {/* Incomplete Tasks */}
-        {tasklist.tasks.map(
-          (task) =>
-            !task.completedAt && (
-              <TaskItem
-                key={task._id}
-                task={task}
-                listId={tasklist._id}
-                canPlaySound={canPlaySound}
-                setCanPlaySound={setCanPlaySound}
-              />
-            )
-        )}
-
-        {/* Completed Tasks */}
-        <div className="mt-6">
-          <div className="text-xs font-medium text-gray-500 mb-2 px-1">
-            {/* ({tasklist.completedTasks.length}) */}
-          </div>
+        <SortableContext
+          items={tasklist.tasks.length > 0 ? tasklist.tasks.map((task) => task._id) : []}
+          strategy={verticalListSortingStrategy}
+        >
           {tasklist.tasks.map(
             (task) =>
-              task.completedAt && (
+              !task.completedAt && (
                 <TaskItem
                   key={task._id}
                   task={task}
@@ -201,6 +192,26 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
                 />
               )
           )}
+        </SortableContext>
+
+        {/* Completed Tasks */}
+        <div className="mt-6">
+          <div className="text-xs font-medium text-gray-500 mb-2 px-1">
+            {/* ({tasklist.completedTasks.length}) */}
+          </div>
+          {tasklist.tasks.length > 0 &&
+            tasklist.tasks.map(
+              (task) =>
+                task.completedAt && (
+                  <TaskItem
+                    key={task._id}
+                    task={task}
+                    listId={tasklist._id}
+                    canPlaySound={canPlaySound}
+                    setCanPlaySound={setCanPlaySound}
+                  />
+                )
+            )}
         </div>
 
         {tasklist.tasks.length === 0 && (

@@ -15,6 +15,7 @@ import { interFont } from "../layout";
 import {
   DndContext,
   DragEndEvent,
+  DragOverEvent,
   DragOverlay,
   DragStartEvent,
   PointerSensor,
@@ -26,10 +27,13 @@ import {
   SortableContext,
 } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
+import { list } from "postcss";
+import { TaskItem } from "./TaskItem";
 
 export default function TaskListArea() {
   const { token, userName, userIsLoading } = useContext(UserContext);
   const [activeTasklist, setActiveTasklist] = useState<TaskList | null>(null);
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
 
   const {
     taskLists,
@@ -37,6 +41,7 @@ export default function TaskListArea() {
     addTaskList,
     updateTaskListName,
     deleteTaskList,
+    updateTask,
   } = useContext(tasklistContext);
 
   const [isFetching, setIsFetching] = useState(false);
@@ -46,37 +51,203 @@ export default function TaskListArea() {
   );
 
   const handleDragStart = (event: DragStartEvent) => {
-    console.log(event);
     if (event.active.data.current?.type === "tasklist") {
       setActiveTasklist(event.active.data.current?.tasklist || null);
+    }
+    if (event.active.data.current?.type === "task") {
+      setActiveTask(event.active.data.current?.task || null);
     }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    if (event.active.data.current?.type === "tasklist") {
+    const isDraggedATask = event.active.data.current?.type === "task";
+    const isDraggedATasklist = event.active.data.current?.type === "tasklist";
+    const isOverATasklist = event.over?.data.current?.type === "tasklist";
+    const isOverATask = event.over?.data.current?.type === "task";
+    if (isDraggedATasklist) {
       setActiveTasklist(null);
-    }
-    const { active, over } = event;
-    console.log(over);
-    if (!over) return;
-    if (over.data.current?.tasklist.isDefault === true) return;
+      const { active, over } = event;
+      if (!over) return;
+      if (over.data.current?.tasklist.isDefault === true) return;
 
-    if (active.id !== over.id) {
-      const oldIndex = tasklistIds.indexOf(active.id as string);
-      const newIndex = tasklistIds.indexOf(over.id as string);
-      const newTaskLists = structuredClone(taskLists);
-      const [movedTaskList] = newTaskLists.splice(oldIndex, 1);
-      newTaskLists.splice(newIndex, 0, movedTaskList);
-      setTaskLists(newTaskLists);
-      localStorage.setItem("taskLists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
+      if (active.id !== over.id) {
+        const oldIndex = tasklistIds.indexOf(active.id as string);
+        const newIndex = tasklistIds.indexOf(over.id as string);
+        const newTaskLists = structuredClone(taskLists);
+        const [movedTaskList] = newTaskLists.splice(oldIndex, 1);
+        newTaskLists.splice(newIndex, 0, movedTaskList);
+        setTaskLists(newTaskLists);
+        return localStorage.setItem("taskLists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
+      }
+    }
+
+    if (isDraggedATask && isOverATask) {
+      setActiveTask(null);
+      const { active, over } = event;
+      if (!over) return;
+
+      if (
+        active.id !== over.id &&
+        active.data.current?.task.taskListId ==
+          over.data.current?.task.taskListId
+      ) {
+        const listId = active.data.current?.task.taskListId;
+        const tasklist = taskLists.find((list) => list._id == listId);
+        const tasks = tasklist?.tasks;
+        const taskIndex = tasks.findIndex((task) => task._id === active.id);
+        const overIndex = tasks.findIndex((task) => task._id === over.id);
+        let newTaskLists: TaskList[] = structuredClone(taskLists);
+        newTaskLists = newTaskLists.map((list: TaskList) => {
+          if (list._id === listId) {
+            list.tasks.splice(taskIndex, 1);
+            list.tasks.splice(overIndex, 0, tasks[taskIndex]);
+            return list;
+          }
+          return list;
+        });
+        setActiveTask(null);
+        setTaskLists(newTaskLists);
+        return localStorage.setItem("taskLists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
+      }
+      if (isDraggedATask && isOverATasklist) {
+        const activeTaskTasklistId = event.active.data.current?.task.taskListId;
+        const overTasklistId = event.over.id;
+        const draggedTask = event.active.data.current?.task;
+        const newTaskLists = structuredClone(taskLists);
+        const draggedTaskList = newTaskLists.find(
+          (list) => list._id === activeTaskTasklistId
+        );
+        const overTaskList = newTaskLists.find(
+          (list) => list._id === overTasklistId
+        );
+        draggedTaskList?.tasks.splice(
+          draggedTaskList.tasks.findIndex(
+            (task) => task._id === draggedTask._id
+          ),
+          1
+        );
+        overTaskList?.tasks.push(draggedTask);
+        setTaskLists(newTaskLists);
+        updateTask(overTasklistId, draggedTask, {
+          taskListId: overTasklistId,
+        });
+        return localStorage.setItem("taskLists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
+      }
     }
   };
 
-  const sensors = useSensors(useSensor(PointerSensor, {
-    activationConstraint: {
-      distance: 5,
-    },
-  }));
+  const handleDragOver = (event: DragOverEvent) => {
+    // console.log("active: ", event.active?.id);
+    // console.log("over: ", event.over?.id);
+
+    const isDraggedATask = event.active?.data.current?.type === "task";
+    const isOverATask = event.over?.data.current?.type === "task";
+    const isDraggedATasklist = event.active?.data.current?.type === "tasklist";
+    const isOverATasklist = event.over?.data.current?.type === "tasklist";
+
+    if (isDraggedATask && isOverATask) {
+      const activeTaskTasklistId = event.active.data.current?.task.taskListId;
+      const overTasklistId = event.over.data.current?.task.taskListId;
+      const draggedTask = event.active.data.current?.task;
+      const overTask = event.over.data.current?.task;
+      //STEP Push the dragged task in the appropriate array
+      if (
+        activeTaskTasklistId !== overTasklistId &&
+        draggedTask._id != overTask._id
+      ) {
+        const newTaskLists = structuredClone(taskLists);
+        const draggedTaskList = newTaskLists.find(
+          (list) => list._id === activeTaskTasklistId
+        );
+        const overTaskList = newTaskLists.find(
+          (list) => list._id === overTasklistId
+        );
+        draggedTaskList?.tasks.splice(
+          draggedTaskList.tasks.findIndex(
+            (task) => task._id === draggedTask._id
+          ),
+          1
+        );
+        overTaskList?.tasks.push(draggedTask);
+        setTaskLists(newTaskLists);
+        return updateTask(overTasklistId, draggedTask, {
+          taskListId: overTasklistId,
+        }); //STEP update the tasklistId
+      }
+
+      // if (isDraggedATask && isOverATasklist) {
+      //   const newTaskLists = structuredClone(taskLists);
+      //   const draggedTaskList = newTaskLists.find(
+      //     (list) => list._id === activeTaskTasklistId
+      //   );
+      //   const overTaskList = newTaskLists.find(
+      //     (list) => list._id === overTasklistId
+      //   );
+      //   draggedTaskList?.tasks.splice(
+      //     draggedTaskList.tasks.findIndex(
+      //       (task) => task._id === draggedTask._id
+      //     ),
+      //     1
+      //   );
+      //   overTaskList?.tasks.push(draggedTask);
+      //   setTaskLists(newTaskLists);
+      //   return updateTask(overTasklistId, draggedTask, {
+      //     taskListId: overTasklistId,
+      //   });
+      // }
+    }
+
+    // if (isDraggedATask && isOverATasklist) {
+    //   // console.log("Is Over A Tasklist")
+    //   const activeTaskTasklistId: string =
+    //     event.active.data.current?.task.taskListId;
+    //   const overTasklistId = event.over.id;
+    //   console.log(activeTaskTasklistId);
+    //   console.log(overTasklistId);
+    //   const activeTask: Task = event.active.data.current?.task;
+
+    //   // updateTask(overTasklistId, activeTask, {taskListId: overTasklistId})
+    //   // console.log(taskLists)
+
+    //   if (overTasklistId && overTasklistId !== activeTaskTasklistId) {
+    //     // const newTaskLists = structuredClone(taskLists);
+
+    //     setTaskLists(
+    //       taskLists.map((list) => {
+    //         if (list._id === activeTaskTasklistId) {
+    //           let targetList = list;
+    //           targetList = {
+    //             ...list,
+    //             tasks: list.tasks.filter((task) => task._id !== activeTask._id),
+    //           };
+    //         }
+    //         if (list._id === overTasklistId) {
+    //           return {
+    //             ...list,
+    //             tasks: [...list.tasks, activeTask],
+    //           };
+    //         }
+    //         return list;
+    //       })
+    //     );
+    //   }
+    // }
+
+    // if (event.active.data.current?.type === "tasklist") {
+    //   setActiveTasklist(event.active.data.current?.tasklist || null);
+    // }
+    // if (event.active.data.current?.type === "task") {
+    //   setActiveTask(event.active.data.current?.task || null);
+    // }
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 1,
+      },
+    })
+  );
 
   const fetchData = async () => {
     setIsFetching(true);
@@ -116,7 +287,12 @@ export default function TaskListArea() {
         </div>
       ) : (
         <>
-          <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+          <DndContext
+            sensors={sensors}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onDragOver={handleDragOver}
+          >
             <SortableContext
               items={tasklistIds}
               strategy={horizontalListSortingStrategy}
@@ -178,7 +354,14 @@ export default function TaskListArea() {
                     <TaskColumn
                       tasklist={activeTasklist}
                       className={"opacity-50"}
-                    /> //! Delte tasklist function ?
+                    />
+                  )}
+                  {activeTask && (
+                    <TaskItem
+                      task={activeTask}
+                      listId={activeTask.taskListId}
+                      className={"opacity-50"}
+                    />
                   )}
                 </DragOverlay>,
                 document.body

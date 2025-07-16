@@ -2,10 +2,7 @@
 
 import type React from "react";
 import { useContext, useEffect, useRef, useState } from "react";
-import {
-  MoreVertical,
-  Trash2,
-} from "lucide-react";
+import { MoreVertical, Trash2 } from "lucide-react";
 import { Button } from "@/app/global-components/ui/button";
 import { Input } from "@/app/global-components/ui/input";
 import { Textarea } from "@/app/global-components/ui/textarea";
@@ -35,6 +32,7 @@ interface TaskItemProps {
   compact?: boolean;
   canPlaySound?: boolean;
   setCanPlaySound?: React.Dispatch<React.SetStateAction<boolean>>;
+  className?: string;
 }
 
 export function TaskItem({
@@ -45,6 +43,7 @@ export function TaskItem({
   compact = false,
   canPlaySound,
   setCanPlaySound,
+  className,
 }: TaskItemProps) {
   const { toggleTask, updateTask, deleteTask } = useContext(tasklistContext);
   const audioRef = useRef(null);
@@ -69,6 +68,27 @@ export function TaskItem({
     setEditTitle(task.title);
   };
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transition,
+    transform,
+    isDragging,
+  } = useSortable({
+    id: task._id,
+    data: {
+      type: "task",
+      task,
+    } as { type: "task"; task: Task },
+    disabled: Boolean(task.completedAt),
+  });
+
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
+
   const handleCheckTask = () => {
     setCanPlaySound(true);
     toggleTask(task, listId);
@@ -87,9 +107,14 @@ export function TaskItem({
       <audio ref={audioRef} src="/task-check.mp3" preload="auto" />
       <audio ref={audioRef2} src="/task-check2.mp3" preload="auto" />
       <div
+        {...attributes}
+        {...listeners}
+        ref={setNodeRef}
+        style={style}
         className={cn(
           "group transition-all duration-200 ",
-          task.completedAt !== null ? "opacity-60" : " "
+          task.completedAt !== null ? "opacity-60" : " " + className,
+          isDragging ? "border-2 border-blue-600/50 rounded-lg" : ""
         )}
       >
         {editingTask ? (
@@ -116,7 +141,7 @@ export function TaskItem({
         ) : (
           <div
             className={cn(
-              "bg-white p-2 rounded-lg border border-gray-200 hover:shadow-sm transition-shadow cursor-grab active:cursor-grabbing"
+              "bg-white p-2 rounded-lg border border-gray-200 hover:shadow-sm hover:border-gray-400/50 transition-shadow cursor-grab active:cursor-grabbing"
             )}
           >
             <div className="flex items-start gap-2">
