@@ -117,82 +117,98 @@ export function TaskItem({
           isDragging ? "border-2 border-blue-600/50 rounded-lg" : ""
         )}
       >
-        {editingTask ? (
-          <div className="p-3 border border-blue-200 rounded-lg bg-blue-50">
-            <Input
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
-              className="mb-2 border-none shadow-none bg-transparent p-0 text-sm focus-visible:ring-0"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") saveEdit();
-                if (e.key === "Escape") cancelEdit();
-              }}
-              autoFocus
-            />
-            <div className="flex gap-2 mt-2">
-              <Button size="sm" onClick={saveEdit}>
-                Save
-              </Button>
-              <Button size="sm" variant="outline" onClick={cancelEdit}>
-                Cancel
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div
-            className={cn(
-              "bg-white p-2 rounded-lg border border-gray-200 hover:shadow-sm hover:border-gray-400/50 transition-shadow cursor-grab active:cursor-grabbing"
-            )}
-          >
-            <div className="flex items-start gap-2">
-              <div className="flex items-center gap-1 flex-shrink-0">
-                <Checkbox
-                  checked={task.completedAt !== null}
-                  onCheckedChange={() => handleCheckTask()}
-                  className="flex-shrink-0"
-                />
+        <>
+          {editingTask ? (
+            // Task Edit Input
+            <div className="p-3 border border-blue-200 rounded-lg bg-blue-50">
+              <Input
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                className="mb-2 border-none shadow-none bg-transparent p-0 text-sm focus-visible:ring-0"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") saveEdit();
+                  if (e.key === "Escape") cancelEdit();
+                }}
+                autoFocus
+              />
+              <div className="flex gap-2 mt-2">
+                <Button size="sm" onClick={saveEdit}>
+                  Save
+                </Button>
+                <Button size="sm" variant="outline" onClick={cancelEdit}>
+                  Cancel
+                </Button>
               </div>
-              <div
-                className="flex-1 min-w-0 cursor-pointer"
-                onClick={startEditing}
-              >
+            </div>
+          ) : (
+            <>
+              {isDragging ? (
+                // Drag overlay
                 <div
-                  className={cn(
-                    "text-sm",
-                    task.completedAt && "line-through text-gray-500",
-                    compact && "text-xs"
-                  )}
+                  className={
+                    "h-9 hover:shadow-sm hover:border-gray-400/50 transition-shadow cursor-grab active:cursor-grabbing"
+                  }
+                ></div>
+              ) : (
+                // Task Item
+                <div
+                  className={
+                    //TODOTEST Removed cn(), Might cause errors
+                    "bg-white p-2 rounded-lg border border-gray-200 hover:shadow-sm hover:border-gray-400/50 transition-shadow cursor-grab active:cursor-grabbing"
+                  }
                 >
-                  {task.title}
+                  <div className={"flex items-start gap-2"}>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <Checkbox
+                        checked={task.completedAt !== null}
+                        onCheckedChange={() => handleCheckTask()}
+                        className="flex-shrink-0"
+                      />
+                    </div>
+                    <div
+                      className="flex-1 min-w-0 cursor-pointer"
+                      onClick={startEditing}
+                    >
+                      <div
+                        className={cn(
+                          "text-sm",
+                          task.completedAt && "line-through text-gray-500",
+                          compact && "text-xs"
+                        )}
+                      >
+                        {task.title}
+                      </div>
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <MoreVertical className="h-3 w-3" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={startEditing}>
+                          Edit task
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => deleteTask(listId, task._id)}
+                          className="text-red-600"
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete task
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
-              </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <MoreVertical className="h-3 w-3" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={startEditing}>
-                    Edit task
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => deleteTask(listId, task._id)}
-                    className="text-red-600"
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete task
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-        )}
+              )}
+            </>
+          )}
+        </>
       </div>
     </div>
   );

@@ -360,7 +360,7 @@ export default function TaskListArea() {
                     <TaskItem
                       task={activeTask}
                       listId={activeTask.taskListId}
-                      className={"opacity-50"}
+                      // className={"opacity-50"}
                     />
                   )}
                 </DragOverlay>,
