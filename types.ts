@@ -14,7 +14,7 @@ export interface Task {
   title: string;
   description?: string;
   userId: string;
-  taskListId: string;
+  tasklistId: string;
   parentId?: string | null;
   completedAt: Date | null;
   deletedAt: Date | null;

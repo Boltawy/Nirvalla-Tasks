@@ -5,7 +5,7 @@ import { createContext, useContext, useState } from "react";
 import { UserContext } from "./UserContext";
 
 type TaskListContextType = {
-  taskLists: TaskList[];
+  tasklists: TaskList[];
   // tasks: Task[];
   setTaskLists: React.Dispatch<React.SetStateAction<TaskList[]>>;
   // setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
@@ -20,7 +20,7 @@ type TaskListContextType = {
     taskId: string,
     parentId?: string | null
   ) => void;
-  findTaskInListById: (task: any, taskList: TaskList) => Task | null;
+  findTaskInListById: (task: any, tasklist: TaskList) => Task | null;
 };
 
 type TaskListProviderProps = {
@@ -32,7 +32,7 @@ const tasklistContext = createContext<TaskListContextType>(
 );
 
 const TaskListProvider = ({ children }: TaskListProviderProps) => {
-  const [taskLists, setTaskLists] = useState<TaskList[]>([]);
+  const [tasklists, setTaskLists] = useState<TaskList[]>([]);
   const { userId, userName } = useContext(UserContext);
   const addTaskList = (tasklist?: Partial<TaskList>) => {
     const newList: TaskList = {
@@ -68,14 +68,14 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
       completedAt: null,
       deletedAt: null,
       userId,
-      taskListId: listId,
+      tasklistId: listId,
       parentId: null,
       subtasks: [],
     };
 
     setTaskLists((prev: TaskList[]) =>
       prev.map((list: TaskList) => {
-        if (list._id === newTask.taskListId) {
+        if (list._id === newTask.tasklistId) {
           // Add as main task
           return { ...list, tasks: [...list.tasks, newTask] };
         }
@@ -104,10 +104,10 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
     );
   };
 
-  const toggleTask = (task: Task, taskListId: string) => {
+  const toggleTask = (task: Task, tasklistId: string) => {
     setTaskLists((prev: TaskList[]) =>
       prev.map((list: TaskList) => {
-        if (list._id === taskListId) {
+        if (list._id === tasklistId) {
           return {
             ...list,
             tasks: list.tasks.map((_task: Task) => {
@@ -140,9 +140,9 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
     );
   };
 
-  const findTaskInListById = (task: any, taskList: TaskList): Task | null => {
+  const findTaskInListById = (task: any, tasklist: TaskList): Task | null => {
     // Check main tasks
-    const mainTask = taskList.tasks.find((_task) => {
+    const mainTask = tasklist.tasks.find((_task) => {
       if (task._id) return _task._id === task._id;
       else return _task._id === task;
     });
@@ -154,7 +154,7 @@ const TaskListProvider = ({ children }: TaskListProviderProps) => {
   return (
     <tasklistContext.Provider
       value={{
-        taskLists,
+        tasklists,
         // tasks,
         setTaskLists,
         // setTasks,

@@ -36,7 +36,7 @@ export default function TaskListArea() {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
   const {
-    taskLists,
+    tasklists,
     setTaskLists,
     addTaskList,
     updateTaskListName,
@@ -46,8 +46,8 @@ export default function TaskListArea() {
 
   const [isFetching, setIsFetching] = useState(false);
   const tasklistIds = useMemo(
-    () => taskLists.map((tasklist: TaskList) => tasklist._id),
-    [taskLists]
+    () => tasklists.map((tasklist: TaskList) => tasklist._id),
+    [tasklists]
   );
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -73,11 +73,11 @@ export default function TaskListArea() {
       if (active.id !== over.id) {
         const oldIndex = tasklistIds.indexOf(active.id as string);
         const newIndex = tasklistIds.indexOf(over.id as string);
-        const newTaskLists = structuredClone(taskLists);
+        const newTaskLists = structuredClone(tasklists);
         const [movedTaskList] = newTaskLists.splice(oldIndex, 1);
         newTaskLists.splice(newIndex, 0, movedTaskList);
         setTaskLists(newTaskLists);
-        return localStorage.setItem("taskLists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
+        return localStorage.setItem("tasklists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
       }
     }
 
@@ -88,15 +88,15 @@ export default function TaskListArea() {
 
       if (
         active.id !== over.id &&
-        active.data.current?.task.taskListId ==
-          over.data.current?.task.taskListId
+        active.data.current?.task.tasklistId ==
+          over.data.current?.task.tasklistId
       ) {
-        const listId = active.data.current?.task.taskListId;
-        const tasklist = taskLists.find((list) => list._id == listId);
+        const listId = active.data.current?.task.tasklistId;
+        const tasklist = tasklists.find((list) => list._id == listId);
         const tasks = tasklist?.tasks;
         const taskIndex = tasks.findIndex((task) => task._id === active.id);
         const overIndex = tasks.findIndex((task) => task._id === over.id);
-        let newTaskLists: TaskList[] = structuredClone(taskLists);
+        let newTaskLists: TaskList[] = structuredClone(tasklists);
         newTaskLists = newTaskLists.map((list: TaskList) => {
           if (list._id === listId) {
             list.tasks.splice(taskIndex, 1);
@@ -107,14 +107,14 @@ export default function TaskListArea() {
         });
         setActiveTask(null);
         setTaskLists(newTaskLists);
-        return localStorage.setItem("taskLists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
+        return localStorage.setItem("tasklists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
       }
       if (isDraggedATask && isOverATasklist) {
         console.log("Dropped over a Tasklist");
-        const activeTaskTasklistId = event.active.data.current?.task.taskListId;
+        const activeTaskTasklistId = event.active.data.current?.task.tasklistId;
         const overTasklistId = event.over.id;
         const draggedTask = event.active.data.current?.task;
-        const newTaskLists = structuredClone(taskLists);
+        const newTaskLists = structuredClone(tasklists);
         const draggedTaskList = newTaskLists.find(
           (list) => list._id === activeTaskTasklistId
         );
@@ -130,9 +130,9 @@ export default function TaskListArea() {
         overTaskList?.tasks.push(draggedTask);
         setTaskLists(newTaskLists);
         updateTask(overTasklistId, draggedTask, {
-          taskListId: overTasklistId,
+          tasklistId: overTasklistId,
         });
-        return localStorage.setItem("taskLists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
+        return localStorage.setItem("tasklists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
       }
     }
   };
@@ -147,8 +147,8 @@ export default function TaskListArea() {
     const isOverATasklist = event.over?.data.current?.type === "tasklist";
 
     if (isDraggedATask && isOverATask) {
-      const activeTaskTasklistId = event.active.data.current?.task.taskListId;
-      const overTasklistId = event.over.data.current?.task.taskListId;
+      const activeTaskTasklistId = event.active.data.current?.task.tasklistId;
+      const overTasklistId = event.over.data.current?.task.tasklistId;
       const draggedTask = event.active.data.current?.task;
       const overTask = event.over.data.current?.task;
       //STEP Push the dragged task in the appropriate array
@@ -156,7 +156,7 @@ export default function TaskListArea() {
         activeTaskTasklistId !== overTasklistId &&
         draggedTask._id != overTask._id
       ) {
-        const newTaskLists = structuredClone(taskLists);
+        const newTaskLists = structuredClone(tasklists);
         const draggedTaskList = newTaskLists.find(
           (list) => list._id === activeTaskTasklistId
         );
@@ -172,24 +172,24 @@ export default function TaskListArea() {
         overTaskList?.tasks.push(draggedTask);
         setTaskLists(newTaskLists);
         return updateTask(overTasklistId, draggedTask, {
-          taskListId: overTasklistId,
+          tasklistId: overTasklistId,
         });
       }
     }
 
     if (isDraggedATask && isOverATasklist) { //TODO Abstract by implementin findTasklistById
       const overTasklistId: string = event.over.data.current?.tasklist._id;
-      const tempOverTaskList: TaskList = taskLists.find(
+      const tempOverTaskList: TaskList = tasklists.find(
         (list) => list._id === overTasklistId
       );
 
       const tasklistHasTasks: boolean = tempOverTaskList.tasks.length > 0;
       if (tasklistHasTasks) return;
 
-      const newTaskLists = structuredClone(taskLists);
+      const newTaskLists = structuredClone(tasklists);
 
       const draggedTask = event.active.data.current?.task;
-      const activeTaskTasklistId = event.active.data.current?.task.taskListId;
+      const activeTaskTasklistId = event.active.data.current?.task.tasklistId;
       const activeTaskTasklist = newTaskLists.find(
         (list) => list._id === activeTaskTasklistId
       );
@@ -204,7 +204,7 @@ export default function TaskListArea() {
       activeTaskTasklist.tasks.splice(draggedTaskIndex, 1);
       overTaskList.tasks.push(draggedTask);
       setTaskLists(newTaskLists);
-      updateTask(overTasklistId, draggedTask, { taskListId: overTasklistId });
+      updateTask(overTasklistId, draggedTask, { tasklistId: overTasklistId });
     }
   };
 
@@ -226,7 +226,7 @@ export default function TaskListArea() {
       });
       const lists = data.populatedLists;
       setTaskLists(lists);
-      localStorage.setItem("taskLists", JSON.stringify(lists));
+      localStorage.setItem("tasklists", JSON.stringify(lists));
     } catch (err) {
       //TODO handle error on error fetching
       console.log(token);
@@ -239,7 +239,7 @@ export default function TaskListArea() {
   useEffect(() => {
     if (token && !userIsLoading) fetchData();
     else {
-      const savedTaskLists = localStorage.getItem("taskLists");
+      const savedTaskLists = localStorage.getItem("tasklists");
       if (savedTaskLists) {
         setTaskLists(JSON.parse(savedTaskLists));
       }
@@ -264,11 +264,11 @@ export default function TaskListArea() {
               items={tasklistIds}
               strategy={horizontalListSortingStrategy}
             >
-              {taskLists.length > 0 ? (
+              {tasklists.length > 0 ? (
                 <>
                   <div className=" h-screen bg-gray-100 flex flex-col flex-1 overflow-auto">
                     <div className="flex items-start gap-6 p-6 pt-24 min-w-max h-full overflow-x-auto">
-                      {taskLists.map((tasklist: TaskList) => (
+                      {tasklists.map((tasklist: TaskList) => (
                         <TaskColumn key={tasklist._id} tasklist={tasklist} />
                       ))}
                       <Button variant="outline" onClick={() => addTaskList()}>
@@ -326,7 +326,7 @@ export default function TaskListArea() {
                   {activeTask && (
                     <TaskItem
                       task={activeTask}
-                      listId={activeTask.taskListId}
+                      listId={activeTask.tasklistId}
                       // className={"opacity-50"}
                     />
                   )}

@@ -24,7 +24,7 @@ import { toast } from "sonner";
 
 export default function Nav() {
   const { token, setToken, userName, userIsLoading } = useContext(UserContext);
-  const { taskLists } = useContext(tasklistContext);
+  const { tasklists } = useContext(tasklistContext);
   const [isSyncing, setIsSyncing] = useState(false);
 
   const handleLogout = () => {
@@ -39,7 +39,7 @@ export default function Nav() {
     axios
       .post(
         `${baseUrl}/sync`,
-        { populatedLists: taskLists },
+        { populatedLists: tasklists },
         { headers: { Authorization: `Bearer ${token}` } }
       )
       .then((res) => {
