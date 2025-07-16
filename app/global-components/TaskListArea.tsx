@@ -110,6 +110,7 @@ export default function TaskListArea() {
         return localStorage.setItem("taskLists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
       }
       if (isDraggedATask && isOverATasklist) {
+        console.log("Dropped over a Tasklist");
         const activeTaskTasklistId = event.active.data.current?.task.taskListId;
         const overTasklistId = event.over.id;
         const draggedTask = event.active.data.current?.task;
@@ -172,73 +173,39 @@ export default function TaskListArea() {
         setTaskLists(newTaskLists);
         return updateTask(overTasklistId, draggedTask, {
           taskListId: overTasklistId,
-        }); //STEP update the tasklistId
+        });
       }
-
-      // if (isDraggedATask && isOverATasklist) {
-      //   const newTaskLists = structuredClone(taskLists);
-      //   const draggedTaskList = newTaskLists.find(
-      //     (list) => list._id === activeTaskTasklistId
-      //   );
-      //   const overTaskList = newTaskLists.find(
-      //     (list) => list._id === overTasklistId
-      //   );
-      //   draggedTaskList?.tasks.splice(
-      //     draggedTaskList.tasks.findIndex(
-      //       (task) => task._id === draggedTask._id
-      //     ),
-      //     1
-      //   );
-      //   overTaskList?.tasks.push(draggedTask);
-      //   setTaskLists(newTaskLists);
-      //   return updateTask(overTasklistId, draggedTask, {
-      //     taskListId: overTasklistId,
-      //   });
-      // }
     }
 
-    // if (isDraggedATask && isOverATasklist) {
-    //   // console.log("Is Over A Tasklist")
-    //   const activeTaskTasklistId: string =
-    //     event.active.data.current?.task.taskListId;
-    //   const overTasklistId = event.over.id;
-    //   console.log(activeTaskTasklistId);
-    //   console.log(overTasklistId);
-    //   const activeTask: Task = event.active.data.current?.task;
+    if (isDraggedATask && isOverATasklist) { //TODO Abstract by implementin findTasklistById
+      const overTasklistId: string = event.over.data.current?.tasklist._id;
+      const tempOverTaskList: TaskList = taskLists.find(
+        (list) => list._id === overTasklistId
+      );
 
-    //   // updateTask(overTasklistId, activeTask, {taskListId: overTasklistId})
-    //   // console.log(taskLists)
+      const tasklistHasTasks: boolean = tempOverTaskList.tasks.length > 0;
+      if (tasklistHasTasks) return;
 
-    //   if (overTasklistId && overTasklistId !== activeTaskTasklistId) {
-    //     // const newTaskLists = structuredClone(taskLists);
+      const newTaskLists = structuredClone(taskLists);
 
-    //     setTaskLists(
-    //       taskLists.map((list) => {
-    //         if (list._id === activeTaskTasklistId) {
-    //           let targetList = list;
-    //           targetList = {
-    //             ...list,
-    //             tasks: list.tasks.filter((task) => task._id !== activeTask._id),
-    //           };
-    //         }
-    //         if (list._id === overTasklistId) {
-    //           return {
-    //             ...list,
-    //             tasks: [...list.tasks, activeTask],
-    //           };
-    //         }
-    //         return list;
-    //       })
-    //     );
-    //   }
-    // }
+      const draggedTask = event.active.data.current?.task;
+      const activeTaskTasklistId = event.active.data.current?.task.taskListId;
+      const activeTaskTasklist = newTaskLists.find(
+        (list) => list._id === activeTaskTasklistId
+      );
+      const overTaskList: TaskList = newTaskLists.find(
+        (list) => list._id === overTasklistId
+      );
 
-    // if (event.active.data.current?.type === "tasklist") {
-    //   setActiveTasklist(event.active.data.current?.tasklist || null);
-    // }
-    // if (event.active.data.current?.type === "task") {
-    //   setActiveTask(event.active.data.current?.task || null);
-    // }
+      const draggedTaskIndex = activeTaskTasklist.tasks.findIndex(
+        (task) => task._id == draggedTask._id
+      );
+
+      activeTaskTasklist.tasks.splice(draggedTaskIndex, 1);
+      overTaskList.tasks.push(draggedTask);
+      setTaskLists(newTaskLists);
+      updateTask(overTasklistId, draggedTask, { taskListId: overTasklistId });
+    }
   };
 
   const sensors = useSensors(
