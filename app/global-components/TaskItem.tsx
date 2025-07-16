@@ -112,9 +112,9 @@ export function TaskItem({
         ref={setNodeRef}
         style={style}
         className={cn(
-          "group transition-all duration-200 ",
-          task.completedAt !== null ? "opacity-60" : " " + className,
-          isDragging ? "border-2 border-blue-600/50 rounded-lg" : ""
+          "group transition-all duration-200 touch-none ",
+          task.completedAt !== null ? "opacity-60" : " " + className
+          // isDragging ? "border-2 border-blue-600/50 rounded-lg" : ""
         )}
       >
         <>
@@ -146,7 +146,7 @@ export function TaskItem({
                 // Drag overlay
                 <div
                   className={
-                    "h-9 hover:shadow-sm hover:border-gray-400/50 transition-shadow cursor-grab active:cursor-grabbing"
+                    "h-9 hover:shadow-sm border-2 rounded-lg border-blue-500 cursor-grab active:cursor-grabbing"
                   }
                 ></div>
               ) : (

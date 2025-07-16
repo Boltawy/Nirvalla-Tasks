@@ -56,7 +56,7 @@ export function Login({}) {
       setOpen(false);
       toast.success("Successfully logged in!");
       setTimeout(() => {
-        window.location.href = "/app";
+        window.location.href = "/tasks-app";
       }, 1500);
     } catch (error) {
       if (axios.isAxiosError(error)) {

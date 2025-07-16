@@ -19,6 +19,7 @@ import {
   DragOverlay,
   DragStartEvent,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
@@ -29,6 +30,7 @@ import {
 import { createPortal } from "react-dom";
 import { list } from "postcss";
 import { TaskItem } from "./TaskItem";
+import { toast } from "sonner";
 
 export default function TaskListArea() {
   const { token, userName, userIsLoading } = useContext(UserContext);
@@ -60,15 +62,23 @@ export default function TaskListArea() {
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
+    //TODO Could use refactoring for readability.
     const isDraggedATask = event.active.data.current?.type === "task";
     const isDraggedATasklist = event.active.data.current?.type === "tasklist";
     const isOverATasklist = event.over?.data.current?.type === "tasklist";
     const isOverATask = event.over?.data.current?.type === "task";
+    const isDraggedIsInbox = event.active.data.current?.tasklist?.isDefault;
+    const isOverInbox = event.over?.data?.current?.tasklist?.isDefault;
+
     if (isDraggedATasklist) {
+      setActiveTask(null);
       setActiveTasklist(null);
+      if (isDraggedIsInbox)
+        return toast.error("Inbox tasklist cannot be repositioned");
       const { active, over } = event;
       if (!over) return;
-      if (over.data.current?.tasklist.isDefault === true) return;
+      if (isOverInbox)
+        return toast.error("Inbox tasklist cannot be repositioned");
 
       if (active.id !== over.id) {
         const oldIndex = tasklistIds.indexOf(active.id as string);
@@ -83,6 +93,7 @@ export default function TaskListArea() {
 
     if (isDraggedATask && isOverATask) {
       setActiveTask(null);
+      setActiveTasklist(null);
       const { active, over } = event;
       if (!over) return;
 
@@ -107,37 +118,38 @@ export default function TaskListArea() {
         });
         setActiveTask(null);
         setTaskLists(newTaskLists);
+        console.log(newTaskLists);
         return localStorage.setItem("tasklists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
       }
-      if (isDraggedATask && isOverATasklist) {
-        console.log("Dropped over a Tasklist");
-        const activeTaskTasklistId = event.active.data.current?.task.tasklistId;
-        const overTasklistId = event.over.id;
-        const draggedTask = event.active.data.current?.task;
-        const newTaskLists = structuredClone(tasklists);
-        const draggedTaskList = newTaskLists.find(
-          (list) => list._id === activeTaskTasklistId
-        );
-        const overTaskList = newTaskLists.find(
-          (list) => list._id === overTasklistId
-        );
-        draggedTaskList?.tasks.splice(
-          draggedTaskList.tasks.findIndex(
-            (task) => task._id === draggedTask._id
-          ),
-          1
-        );
-        overTaskList?.tasks.push(draggedTask);
-        setTaskLists(newTaskLists);
-        updateTask(overTasklistId, draggedTask, {
-          tasklistId: overTasklistId,
-        });
-        return localStorage.setItem("tasklists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
-      }
+    }
+    if (isDraggedATask && isOverATasklist) {
+      setActiveTask(null);
+      setActiveTasklist(null);
+      const activeTaskTasklistId = event.active.data.current?.task.tasklistId;
+      const overTasklistId = event.over.id;
+      const draggedTask = event.active.data.current?.task;
+      const newTaskLists = structuredClone(tasklists);
+      const draggedTaskList = newTaskLists.find(
+        (list) => list._id === activeTaskTasklistId
+      );
+      const overTaskList = newTaskLists.find(
+        (list) => list._id === overTasklistId
+      );
+      draggedTaskList?.tasks.splice(
+        draggedTaskList.tasks.findIndex((task) => task._id === draggedTask._id),
+        1
+      );
+      overTaskList?.tasks.push(draggedTask);
+      setTaskLists(newTaskLists);
+      updateTask(overTasklistId, draggedTask, {
+        tasklistId: overTasklistId,
+      });
+      return localStorage.setItem("tasklists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
     }
   };
 
   const handleDragOver = (event: DragOverEvent) => {
+    //TODO Could use refactoring for readability.
     // console.log("active: ", event.active?.id);
     // console.log("over: ", event.over?.id);
 
@@ -145,6 +157,12 @@ export default function TaskListArea() {
     const isOverATask = event.over?.data.current?.type === "task";
     const isDraggedATasklist = event.active?.data.current?.type === "tasklist";
     const isOverATasklist = event.over?.data.current?.type === "tasklist";
+
+    if (isDraggedATasklist) {
+      const isDraggedIsInbox = event.active.data.current.tasklist.isDefault;
+      console.log(isDraggedIsInbox);
+      if (isDraggedIsInbox) return;
+    }
 
     if (isDraggedATask && isOverATask) {
       const activeTaskTasklistId = event.active.data.current?.task.tasklistId;
@@ -177,7 +195,8 @@ export default function TaskListArea() {
       }
     }
 
-    if (isDraggedATask && isOverATasklist) { //TODO Abstract by implementin findTasklistById
+    if (isDraggedATask && isOverATasklist) {
+      //TODO Abstract by implementin findTasklistById
       const overTasklistId: string = event.over.data.current?.tasklist._id;
       const tempOverTaskList: TaskList = tasklists.find(
         (list) => list._id === overTasklistId
@@ -213,6 +232,12 @@ export default function TaskListArea() {
       activationConstraint: {
         distance: 1,
       },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 500,
+        tolerance: 50,
+      },
     })
   );
 
@@ -225,6 +250,7 @@ export default function TaskListArea() {
         headers: { Authorization: `Bearer ${token}` },
       });
       const lists = data.populatedLists;
+      console.log(lists);
       setTaskLists(lists);
       localStorage.setItem("tasklists", JSON.stringify(lists));
     } catch (err) {
@@ -320,7 +346,7 @@ export default function TaskListArea() {
                   {activeTasklist && (
                     <TaskColumn
                       tasklist={activeTasklist}
-                      className={"opacity-50"}
+                      // className={"opacity-50"}
                     />
                   )}
                   {activeTask && (
