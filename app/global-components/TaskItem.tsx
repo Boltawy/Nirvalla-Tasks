@@ -92,6 +92,9 @@ export function TaskItem({
   const handleCheckTask = () => {
     setCanPlaySound(true);
     toggleTask(task, listId);
+    setTimeout(() => {
+      setCanPlaySound(false);
+    }, 0);
   };
   useEffect(() => {
     if (task.completedAt && canPlaySound) {

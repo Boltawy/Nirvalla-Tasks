@@ -118,7 +118,6 @@ export default function TaskListArea() {
         });
         setActiveTask(null);
         setTaskLists(newTaskLists);
-        console.log(newTaskLists);
         return localStorage.setItem("tasklists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
       }
     }
@@ -149,9 +148,9 @@ export default function TaskListArea() {
   };
 
   const handleDragOver = (event: DragOverEvent) => {
+  
     //TODO Could use refactoring for readability.
-    // console.log("active: ", event.active?.id);
-    // console.log("over: ", event.over?.id);
+  
 
     const isDraggedATask = event.active?.data.current?.type === "task";
     const isOverATask = event.over?.data.current?.type === "task";
@@ -160,7 +159,6 @@ export default function TaskListArea() {
 
     if (isDraggedATasklist) {
       const isDraggedIsInbox = event.active.data.current.tasklist.isDefault;
-      console.log(isDraggedIsInbox);
       if (isDraggedIsInbox) return;
     }
 
@@ -250,12 +248,10 @@ export default function TaskListArea() {
         headers: { Authorization: `Bearer ${token}` },
       });
       const lists = data.populatedLists;
-      console.log(lists);
       setTaskLists(lists);
       localStorage.setItem("tasklists", JSON.stringify(lists));
     } catch (err) {
       //TODO handle error on error fetching
-      console.log(token);
       console.error("Failed to fetch tasks", err);
     } finally {
       setIsFetching(false);
