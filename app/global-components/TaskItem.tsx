@@ -99,8 +99,10 @@ export function TaskItem({
       audioRef2.current.volume = 0.3;
       const selectedSound = Math.floor(Math.random() * checkSounds.length);
       checkSounds[selectedSound].current.play();
-      setCanPlaySound(false);
     }
+    setTimeout(() => {
+      setCanPlaySound(false);
+    }, 100);
   }, []);
 
   return (
