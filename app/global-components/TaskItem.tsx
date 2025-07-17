@@ -94,7 +94,7 @@ export function TaskItem({
     toggleTask(task, listId);
     setTimeout(() => {
       setCanPlaySound(false);
-    }, 0);
+    }, 10);
   };
   useEffect(() => {
     if (task.completedAt && canPlaySound) {
