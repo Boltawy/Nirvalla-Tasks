@@ -36,6 +36,7 @@ export default function TaskListArea() {
   const { token, userName, userIsLoading } = useContext(UserContext);
   const [activeTasklist, setActiveTasklist] = useState<TaskList | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  // const [dragOverCount, setDragOverCount] = useState<number>(0);
 
   const {
     tasklists,
@@ -91,6 +92,7 @@ export default function TaskListArea() {
       const [movedTaskList] = newTaskLists.splice(oldIndex, 1);
       newTaskLists.splice(newIndex, 0, movedTaskList);
       setTaskLists(newTaskLists);
+      // setDragOverCount(0);
       return localStorage.setItem("tasklists", JSON.stringify(newTaskLists)); //? When should I save to local storage
     }
 
@@ -113,14 +115,19 @@ export default function TaskListArea() {
         }
         return list;
       });
+
       setTaskLists(newTaskLists);
+      // setDragOverCount(0);
+      // console.log("Dragged a task over a task")
       return localStorage.setItem("tasklists", JSON.stringify(newTaskLists)); //? When should I save to local storage
     }
   };
 
   const handleDragOver = (event: DragOverEvent) => {
     //TODO Could use refactoring for readability.
-
+    // setDragOverCount((prev) => prev + 1);
+    // console.log(dragOverCount);
+    // if (dragOverCount > 10) return;
     const isDraggedATask = event.active?.data.current?.type === "task";
     const isOverATask = event.over?.data.current?.type === "task";
     const isDraggedATasklist = event.active?.data.current?.type === "tasklist";
@@ -144,13 +151,19 @@ export default function TaskListArea() {
       const overTaskList = newTaskLists.find(
         (list) => list._id === overTasklistId
       );
-      draggedTaskList?.tasks.splice(
+      const removedTaskArray = draggedTaskList?.tasks.splice(
         draggedTaskList.tasks.findIndex((task) => task._id === draggedTask._id),
         1
       );
+      const removedTask = removedTaskArray?.[0];
+      if (!removedTask || removedTask._id != draggedTask._id) return console.log("prevented a duplicate key error :D");
+
       draggedTask.tasklistId = overTasklistId;
       overTaskList?.tasks.push(draggedTask);
-      setTaskLists(newTaskLists);
+      setTimeout(() => {
+        setTaskLists(newTaskLists);
+      }, 0);
+      return;
     }
 
     if (isDraggedATask && isOverATasklist) {
