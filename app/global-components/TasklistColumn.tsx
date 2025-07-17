@@ -73,9 +73,8 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
       type: "tasklist",
       tasklist,
     },
+    disabled: tasklist.isDefault,
   });
-
-  const attributesAndListeners = tasklist.isDefault ? {} : { ...attributes, ...listeners };
 
   const style = {
     transition,
@@ -95,7 +94,8 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
         >
           {/* Column Header */}
           <div
-            {...attributesAndListeners}
+            {...attributes}
+            {...listeners}
             className={
               "p-4 border-b border-gray-200 bg-white rounded-t-lg flex justify-between items-center gap-2 touch-none " +
               (tasklist.isDefault

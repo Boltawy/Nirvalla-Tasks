@@ -64,69 +64,79 @@ export default function TaskListArea() {
   const handleDragEnd = (event: DragEndEvent) => {
     //TODO Could use refactoring for readability.
     const isDraggedATask = event.active.data.current?.type === "task";
+    const draggedTask: Task = event.active.data.current?.task;
     const isDraggedATasklist = event.active.data.current?.type === "tasklist";
     const isOverATasklist = event.over?.data.current?.type === "tasklist";
+    const activeTasklistId = event.active.id;
+    const overTasklistId = event.over?.id;
     const isOverATask = event.over?.data.current?.type === "task";
+    const overTask: Task = event.over?.data.current?.task;
     const isDraggedIsInbox = event.active.data.current?.tasklist?.isDefault;
     const isOverInbox = event.over?.data?.current?.tasklist?.isDefault;
 
-    if (isDraggedATasklist) {
-      setActiveTask(null);
-      setActiveTasklist(null);
-      if (isDraggedIsInbox)
-        return toast.error("Inbox tasklist cannot be repositioned");
-      const { active, over } = event;
-      if (!over) return;
-      if (isOverInbox)
-        return toast.error("Inbox tasklist cannot be repositioned");
+    setActiveTask(null);
+    setActiveTasklist(null);
 
-      if (active.id !== over.id) {
-        const oldIndex = tasklistIds.indexOf(active.id as string);
-        const newIndex = tasklistIds.indexOf(over.id as string);
-        const newTaskLists = structuredClone(tasklists);
-        const [movedTaskList] = newTaskLists.splice(oldIndex, 1);
-        newTaskLists.splice(newIndex, 0, movedTaskList);
-        setTaskLists(newTaskLists);
-        return localStorage.setItem("tasklists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
-      }
+    if (isDraggedATasklist) {
+      if (!isOverATasklist) return;
+      if (activeTasklistId == overTasklistId) return;
+      if (isDraggedIsInbox)
+        return toast.error("Inbox tasklist cannot be repositioned.");
+      if (isOverInbox)
+        return toast.error("Inbox tasklist cannot be repositioned.");
+
+      const oldIndex = tasklistIds.indexOf(activeTasklistId as string);
+      const newIndex = tasklistIds.indexOf(overTasklistId as string);
+      const newTaskLists = structuredClone(tasklists);
+      const [movedTaskList] = newTaskLists.splice(oldIndex, 1);
+      newTaskLists.splice(newIndex, 0, movedTaskList);
+      setTaskLists(newTaskLists);
+      return localStorage.setItem("tasklists", JSON.stringify(newTaskLists)); //? When should I save to local storage
     }
 
     if (isDraggedATask && isOverATask) {
-      setActiveTask(null);
-      setActiveTasklist(null);
-      const { active, over } = event;
-      if (!over) return;
+      if (!overTask) return;
+      if (draggedTask._id == overTask._id) return;
+      if (draggedTask.tasklistId == overTask.tasklistId) return;
 
-      if (
-        active.id !== over.id &&
-        active.data.current?.task.tasklistId ==
-          over.data.current?.task.tasklistId
-      ) {
-        const listId = active.data.current?.task.tasklistId;
-        const tasklist = tasklists.find((list) => list._id == listId);
-        const tasks = tasklist?.tasks;
-        const taskIndex = tasks.findIndex((task) => task._id === active.id);
-        const overIndex = tasks.findIndex((task) => task._id === over.id);
-        let newTaskLists: TaskList[] = structuredClone(tasklists);
-        newTaskLists = newTaskLists.map((list: TaskList) => {
-          if (list._id === listId) {
-            list.tasks.splice(taskIndex, 1);
-            list.tasks.splice(overIndex, 0, tasks[taskIndex]);
-            return list;
-          }
+      const listId = draggedTask.tasklistId;
+      const tasklist = tasklists.find((list) => list._id == listId);
+      const tasks = tasklist?.tasks;
+      const taskIndex = tasks.findIndex((task) => task._id === draggedTask._id);
+      const overIndex = tasks.findIndex((task) => task._id === overTask._id);
+      let newTaskLists: TaskList[] = structuredClone(tasklists);
+      newTaskLists = newTaskLists.map((list: TaskList) => {
+        if (list._id === listId) {
+          list.tasks.splice(taskIndex, 1);
+          list.tasks.splice(overIndex, 0, tasks[taskIndex]);
           return list;
-        });
-        setActiveTask(null);
-        setTaskLists(newTaskLists);
-        return localStorage.setItem("tasklists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
-      }
+        }
+        return list;
+      });
+      setTaskLists(newTaskLists);
+      return localStorage.setItem("tasklists", JSON.stringify(newTaskLists)); //? When should I save to local storage
     }
-    if (isDraggedATask && isOverATasklist) {
-      setActiveTask(null);
-      setActiveTasklist(null);
+  };
+
+  const handleDragOver = (event: DragOverEvent) => {
+    //TODO Could use refactoring for readability.
+
+    const isDraggedATask = event.active?.data.current?.type === "task";
+    const isOverATask = event.over?.data.current?.type === "task";
+    const isDraggedATasklist = event.active?.data.current?.type === "tasklist";
+    const isOverATasklist = event.over?.data.current?.type === "tasklist";
+
+    if (isDraggedATasklist) return;
+
+    if (isDraggedATask && isOverATask) {
       const activeTaskTasklistId = event.active.data.current?.task.tasklistId;
-      const overTasklistId = event.over.id;
-      const draggedTask = event.active.data.current?.task;
+      const overTasklistId = event.over.data.current?.task.tasklistId;
+      const draggedTask: Task = event.active.data.current?.task;
+      const overTask: Task = event.over.data.current?.task;
+
+      if (activeTaskTasklistId == overTasklistId) return;
+      if (draggedTask._id == overTask._id) return;
+
       const newTaskLists = structuredClone(tasklists);
       const draggedTaskList = newTaskLists.find(
         (list) => list._id === activeTaskTasklistId
@@ -138,59 +148,9 @@ export default function TaskListArea() {
         draggedTaskList.tasks.findIndex((task) => task._id === draggedTask._id),
         1
       );
+      draggedTask.tasklistId = overTasklistId;
       overTaskList?.tasks.push(draggedTask);
       setTaskLists(newTaskLists);
-      updateTask(overTasklistId, draggedTask, {
-        tasklistId: overTasklistId,
-      });
-      return localStorage.setItem("tasklists", JSON.stringify(newTaskLists)); //? When should I serialize to local storage
-    }
-  };
-
-  const handleDragOver = (event: DragOverEvent) => {
-  
-    //TODO Could use refactoring for readability.
-  
-
-    const isDraggedATask = event.active?.data.current?.type === "task";
-    const isOverATask = event.over?.data.current?.type === "task";
-    const isDraggedATasklist = event.active?.data.current?.type === "tasklist";
-    const isOverATasklist = event.over?.data.current?.type === "tasklist";
-
-    if (isDraggedATasklist) {
-      const isDraggedIsInbox = event.active.data.current.tasklist.isDefault;
-      if (isDraggedIsInbox) return;
-    }
-
-    if (isDraggedATask && isOverATask) {
-      const activeTaskTasklistId = event.active.data.current?.task.tasklistId;
-      const overTasklistId = event.over.data.current?.task.tasklistId;
-      const draggedTask = event.active.data.current?.task;
-      const overTask = event.over.data.current?.task;
-      //STEP Push the dragged task in the appropriate array
-      if (
-        activeTaskTasklistId !== overTasklistId &&
-        draggedTask._id != overTask._id
-      ) {
-        const newTaskLists = structuredClone(tasklists);
-        const draggedTaskList = newTaskLists.find(
-          (list) => list._id === activeTaskTasklistId
-        );
-        const overTaskList = newTaskLists.find(
-          (list) => list._id === overTasklistId
-        );
-        draggedTaskList?.tasks.splice(
-          draggedTaskList.tasks.findIndex(
-            (task) => task._id === draggedTask._id
-          ),
-          1
-        );
-        overTaskList?.tasks.push(draggedTask);
-        setTaskLists(newTaskLists);
-        return updateTask(overTasklistId, draggedTask, {
-          tasklistId: overTasklistId,
-        });
-      }
     }
 
     if (isDraggedATask && isOverATasklist) {
@@ -205,7 +165,7 @@ export default function TaskListArea() {
 
       const newTaskLists = structuredClone(tasklists);
 
-      const draggedTask = event.active.data.current?.task;
+      const draggedTask: Task = event.active.data.current?.task;
       const activeTaskTasklistId = event.active.data.current?.task.tasklistId;
       const activeTaskTasklist = newTaskLists.find(
         (list) => list._id === activeTaskTasklistId
@@ -219,9 +179,9 @@ export default function TaskListArea() {
       );
 
       activeTaskTasklist.tasks.splice(draggedTaskIndex, 1);
+      draggedTask.tasklistId = overTasklistId;
       overTaskList.tasks.push(draggedTask);
       setTaskLists(newTaskLists);
-      updateTask(overTasklistId, draggedTask, { tasklistId: overTasklistId });
     }
   };
 
