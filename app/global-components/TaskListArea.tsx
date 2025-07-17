@@ -104,17 +104,26 @@ export default function TaskListArea() {
       const listId = draggedTask.tasklistId;
       const tasklist = tasklists.find((list) => list._id == listId);
       const tasks = tasklist?.tasks;
-      const taskIndex = tasks.findIndex((task) => task._id === draggedTask._id);
+      const draggedTaskIndex = tasks.findIndex(
+        (task) => task._id === draggedTask._id
+      );
       const overIndex = tasks.findIndex((task) => task._id === overTask._id);
-      let newTaskLists: TaskList[] = structuredClone(tasklists);
-      newTaskLists = newTaskLists.map((list: TaskList) => {
-        if (list._id === listId) {
-          list.tasks.splice(taskIndex, 1);
-          list.tasks.splice(overIndex, 0, tasks[taskIndex]);
-          return list;
-        }
-        return list;
-      });
+      const newTaskLists: TaskList[] = structuredClone(tasklists);
+
+      const activeTasklist = newTaskLists.find((list) => list._id === listId);
+      const removedTask = activeTasklist?.tasks.splice(draggedTaskIndex, 1)[0];
+      if (!removedTask) return;
+      activeTasklist?.tasks.splice(overIndex, 0, removedTask);
+
+      // newTaskLists = newTaskLists.map((list: TaskList) => {
+      //   if (list._id === listId) {
+      //     const removedTask =list.tasks.splice(draggedTaskIndex, 1)[0];
+      //     if (!removedTask) return;
+      //     list.tasks.splice(overIndex, 0, tasks[draggedTaskIndex]);
+      //     return list;
+      //   }
+      //   return list;
+      // });
 
       setTaskLists(newTaskLists);
       // setDragOverCount(0);
@@ -156,7 +165,8 @@ export default function TaskListArea() {
         1
       );
       const removedTask = removedTaskArray?.[0];
-      if (!removedTask || removedTask._id != draggedTask._id) return console.log("prevented a duplicate key error :D");
+      if (!removedTask || removedTask._id != draggedTask._id)
+        return console.log("prevented a duplicate key error :D");
 
       draggedTask.tasklistId = overTasklistId;
       overTaskList?.tasks.push(draggedTask);
