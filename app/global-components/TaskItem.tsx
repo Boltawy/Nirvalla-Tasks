@@ -92,9 +92,6 @@ export function TaskItem({
   const handleCheckTask = () => {
     setCanPlaySound(true);
     toggleTask(task, listId);
-    setTimeout(() => {
-      setCanPlaySound(false);
-    }, 10);
   };
   useEffect(() => {
     if (task.completedAt && canPlaySound) {
@@ -102,6 +99,7 @@ export function TaskItem({
       audioRef2.current.volume = 0.3;
       const selectedSound = Math.floor(Math.random() * checkSounds.length);
       checkSounds[selectedSound].current.play();
+      setCanPlaySound(false);
     }
   }, []);
 
