@@ -97,7 +97,7 @@ export default function TaskListArea() {
     if (isDraggedATask && isOverATask) {
       if (!overTask) return;
       if (draggedTask._id == overTask._id) return;
-      if (draggedTask.tasklistId == overTask.tasklistId) return;
+      if (draggedTask.tasklistId != overTask.tasklistId) return;
 
       const listId = draggedTask.tasklistId;
       const tasklist = tasklists.find((list) => list._id == listId);
