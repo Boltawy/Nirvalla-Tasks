@@ -103,7 +103,7 @@ export function TaskItem({
     setTimeout(() => {
       setCanPlaySound(false);
     }, 100);
-  }, []);
+  }, [task.completedAt]);
 
   return (
     <div className={cn("space-y-1", depth > 0 && "ml-4")}>
@@ -112,6 +112,7 @@ export function TaskItem({
       <div
         {...attributes}
         {...listeners}
+        // ref={task.completedAt ? null : setNodeRef}
         ref={setNodeRef}
         style={style}
         className={cn(

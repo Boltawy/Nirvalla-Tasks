@@ -68,43 +68,29 @@ export default function Nav() {
         </div>
         <ul className="flex justify-between items-center gap-4">
           {path == "/tasks-app" && (
-            // <TooltipProvider>
-            //   <Tooltip delayDuration={200}>
-            //     <TooltipTrigger
-            //       className={
-            //         "flex items-center gap-1 px-4 py-2 mr-8 border rounded-sm border-gray-300 hover:border-gray-400 transition-all " +
-            //         (token ? "" : " opacity-20 cursor-not-allowed")
-            //       }
-            //       onClick={token ? handleSync : null}
-            //     >
-            //       <RefreshCcw
-            //         size={14}
-            //         className={isSyncing ? "animate-spin-counter" : ""}
-            //       />
-            //       {/* Sync Now */}
-            //     </TooltipTrigger>
-            //     <TooltipContent arrowPadding={4}>
-            //       <TooltipArrow className="fill-gray-300"></TooltipArrow>
-            //       <p>
-            //         {token ? "Sync Now" : "Signup now to save your progress"}
-            //       </p>
-            //     </TooltipContent>
-            //   </Tooltip>
-            // </TooltipProvider>
-            <Button
-            variant="secondary"
-              className={
-                "flex items-center gap-1 px-4 py-2 mr-8 border rounded-sm border-gray-300 hover:border-gray-400 transition-all " +
-                (token ? "" : " opacity-20 cursor-not-allowed")
-              }
-              onClick={token ? handleSync : null}
-            >
-              <RefreshCcw
-                size={14}
-                className={isSyncing ? "animate-spin-counter" : ""}
-              />
-              {/* Sync Now */}
-            </Button>
+            <TooltipProvider>
+              <Tooltip delayDuration={200}>
+                <TooltipTrigger
+                  className={
+                    "flex items-center gap-1 px-4 py-2 mr-8 border rounded-sm border-gray-300 hover:border-gray-400 transition-all " +
+                    (token ? "" : " opacity-20 cursor-not-allowed")
+                  }
+                  onClick={token ? handleSync : null}
+                >
+                  <RefreshCcw
+                    size={14}
+                    className={isSyncing ? "animate-spin-counter" : ""}
+                  />
+                  {/* Sync Now */}
+                </TooltipTrigger>
+                <TooltipContent arrowPadding={4}>
+                  <TooltipArrow className="fill-gray-300"></TooltipArrow>
+                  <p>
+                    {token ? "Sync Now" : "Signup now to save your progress"}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
           {path != "/tasks-app" && !userIsLoading && !token && (
             <li>
