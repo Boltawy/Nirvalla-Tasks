@@ -116,7 +116,7 @@ export function TaskItem({
         ref={setNodeRef}
         style={style}
         className={cn(
-          "group transition-all duration-200 touch-manipulation ",
+          "group transition-all duration-200 touch-auto ",
           task.completedAt !== null ? "opacity-60" : " " + className
           // isDragging ? "border-2 border-blue-600/50 rounded-lg" : ""
         )}

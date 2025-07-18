@@ -213,8 +213,8 @@ export default function TaskListArea() {
   const sensors = useSensors(
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 400,
-        tolerance: 200,
+        delay: 320,
+        tolerance: 10,
       },
     }),
     useSensor(MouseSensor, {
