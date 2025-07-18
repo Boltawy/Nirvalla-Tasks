@@ -18,6 +18,7 @@ import {
   DragOverEvent,
   DragOverlay,
   DragStartEvent,
+  MouseSensor,
   PointerSensor,
   TouchSensor,
   useSensor,
@@ -208,16 +209,17 @@ export default function TaskListArea() {
     }
   };
 
+
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 1,
-      },
-    }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 500,
+        delay: 400,
         tolerance: 50,
+      },
+    }),
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 1,
       },
     })
   );
