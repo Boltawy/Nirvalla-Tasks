@@ -214,7 +214,7 @@ export default function TaskListArea() {
     useSensor(TouchSensor, {
       activationConstraint: {
         delay: 400,
-        tolerance: 50,
+        tolerance: 100,
       },
     }),
     useSensor(MouseSensor, {
