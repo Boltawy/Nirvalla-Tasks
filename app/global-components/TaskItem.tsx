@@ -23,6 +23,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { Task } from "../../types";
 import { tasklistContext } from "../context/TasklistContext";
+import { toast } from "sonner";
 
 interface TaskItemProps {
   task: Task;
@@ -95,6 +96,10 @@ export function TaskItem({
   };
   useEffect(() => {
     if (task.completedAt && canPlaySound) {
+      toast.success("Task completed!", {
+        duration: 1500,
+        position: "bottom-right",
+      });
       audioRef.current.volume = 0.3;
       audioRef2.current.volume = 0.3;
       const selectedSound = Math.floor(Math.random() * checkSounds.length);
