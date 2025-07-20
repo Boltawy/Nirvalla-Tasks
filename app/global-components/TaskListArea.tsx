@@ -34,7 +34,7 @@ import { TaskItem } from "./TaskItem";
 import { toast } from "sonner";
 
 export default function TaskListArea() {
-  const { token, userName, userIsLoading } = useContext(UserContext);
+  const { token, userIsLoading } = useContext(UserContext);
   const [activeTasklist, setActiveTasklist] = useState<TaskList | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   // const [dragOverCount, setDragOverCount] = useState<number>(0);

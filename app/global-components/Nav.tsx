@@ -36,6 +36,7 @@ export default function Nav() {
 
   const handleSync = () => {
     setIsSyncing(true);
+    toast.info("Syncing your data...");
     axios
       .post(
         `${baseUrl}/sync`,
@@ -52,6 +53,10 @@ export default function Nav() {
         setIsSyncing(false);
       });
   };
+
+  useEffect(() => {
+    toast.info("This app is in active development, expect bugs and incomplete features. Thank you for understanding.", {dismissible: true, duration: 7000, closeButton: true, className: "w-max md:left-1/2 md:-translate-x-1/2" });
+  }, []);
   const path = usePathname();
   return (
     <>
