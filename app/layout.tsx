@@ -5,6 +5,7 @@ import Nav from "./global-components/Nav";
 import { TaskListProvider } from "./context/TasklistContext";
 import { Toaster } from "sonner";
 import { UserProvider } from "./context/UserContext";
+import { Suspense } from "react";
 
 export const playfairFont = Playfair({
   subsets: ["latin"],
@@ -37,8 +38,10 @@ export default function RootLayout({
         <Toaster position="top-center" className="z-[200]" richColors={true} />
         <UserProvider>
           <TaskListProvider>
-            <Nav />
-            {children}
+            <Suspense fallback={<div>Loading...</div>}>
+              <Nav />
+              {children}
+            </Suspense>
           </TaskListProvider>
         </UserProvider>
       </body>
