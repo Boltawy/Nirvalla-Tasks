@@ -9,19 +9,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/app/global-components/ui/dialog";
-import { Input } from "@/app/global-components/ui/input";
 import { signupFormData } from "@/types";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { Label } from "@radix-ui/react-label";
 import { SubmitHandler, useForm } from "react-hook-form";
-import LabelTextCombo from "./LabelTextCombo";
 import FloatingLabelInput from "./FloatingLabelInput";
-import { useEffect, useState } from "react";
-import { CircleAlert, CircleSmall, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { CircleAlert, Loader2 } from "lucide-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import axios from "axios";
 import { baseUrl } from "../constants";
+import OAuthMenu from "./OAuthMenu";
 export function Signup({}) {
   const [rerenderCount, setRerenderCount] = useState(0); //for re-rendering when the form error changes.
   const [open, setOpen] = useState(false);
@@ -50,7 +48,7 @@ export function Signup({}) {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
-          toast.error(  
+          toast.error(
             `${error.response?.data.status}: ${error.response?.data.message}`
           );
         } else {
@@ -173,6 +171,7 @@ export function Signup({}) {
               </Button>
             </DialogFooter>
           </form>
+          <OAuthMenu />
         </DialogContent>
       </Dialog>
     </>

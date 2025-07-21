@@ -55,7 +55,7 @@ export default function Nav() {
   };
 
   useEffect(() => {
-    toast.info("This app is in active development, expect bugs and incomplete features. Thank you for understanding.", {dismissible: true, duration: 7000, closeButton: true, className: "w-max md:left-1/2 md:-translate-x-1/2" });
+    toast.info("This app is in active development, expect bugs and incomplete features. Thank you for understanding.", {dismissible: true, duration: 7000, closeButton: true, className: "w-max relative left-[-50%]", position: "bottom-center" });
   }, []);
   const path = usePathname();
   return (

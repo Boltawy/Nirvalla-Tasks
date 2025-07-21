@@ -21,6 +21,8 @@ import { baseUrl } from "../constants";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { UserContext } from "../context/UserContext";
+import OAuthMenu from "./OAuthMenu";
+
 export function Login({}) {
   const [rerenderCount, setRerenderCount] = useState(0); //for re-rendering when the form error changes.
   const [open, setOpen] = useState(false);
@@ -76,6 +78,7 @@ export function Login({}) {
       setIsLoading(false);
     }
   };
+
   return (
     <>
       <Dialog open={open} onOpenChange={() => handleOpenChange()}>
@@ -117,6 +120,7 @@ export function Login({}) {
               </div>
             </motion.div>
           )}
+
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogHeader className="mb-8">
               <DialogTitle className="text-xl -pt-4">
@@ -162,6 +166,7 @@ export function Login({}) {
               </Button>
             </DialogFooter>
           </form>
+          <OAuthMenu />
         </DialogContent>
       </Dialog>
     </>
