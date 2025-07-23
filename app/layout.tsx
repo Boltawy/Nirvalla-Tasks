@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     siteName: "Nirvalla Tasks",
     images: [
       {
-        url: "/nirvalla-b&w-thick.svg",
+        url: "/nirvalla-tasks-white-banner.png",
         width: 1200,
         height: 630,
         alt: "Nirvalla Tasks",
