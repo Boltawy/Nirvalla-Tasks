@@ -22,7 +22,23 @@ export const interFont = Inter({
 
 export const metadata: Metadata = {
   title: "Nirvalla Tasks",
-  description: "The modern task management app",
+  description: "The personal open-source task management app.",
+  keywords: ["task management", "task app", "task list", "task tracker"],
+  openGraph: {
+    title: "Nirvalla Tasks",
+    description: "The personal open-source task management app.",
+    type: "website",
+    locale: "en",
+    siteName: "Nirvalla Tasks",
+    images: [
+      {
+        url: "/nirvalla-b&w-thick.svg",
+        width: 1200,
+        height: 630,
+        alt: "Nirvalla Tasks",
+      },
+    ],
+  },
   icons: {
     icon: "/nirvalla-b&w-thick.svg",
   },
