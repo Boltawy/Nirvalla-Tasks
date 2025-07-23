@@ -6,7 +6,7 @@ import type { TaskList, Task } from "../../types";
 import axios from "axios";
 import { tasklistContext } from "../context/TasklistContext";
 import { Button } from "@/app/global-components/ui/button";
-import { Plus } from "lucide-react";
+import { Link, Plus } from "lucide-react";
 import { baseUrl } from "../constants";
 import { UserContext } from "../context/UserContext";
 import Image from "next/image";
@@ -325,12 +325,12 @@ export default function TaskListArea() {
                       <Plus />
                       Add tasklist
                     </Button>
-                    <a
+                    <Link
                       href="https://storyset.com/work"
                       className="absolute bottom-5 right-5 text-gray-300 hidden md:block"
                     >
                       illustration by Storyset
-                    </a>
+                    </Link>
                   </div>
                 </>
               )}
