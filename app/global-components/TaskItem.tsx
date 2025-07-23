@@ -100,8 +100,8 @@ export function TaskItem({
         duration: 1500,
         position: "bottom-right",
       });
-      audioRef.current.volume = 0.3;
-      audioRef2.current.volume = 0.3;
+      audioRef.current.volume = 0.5;
+      audioRef2.current.volume = 0.5;
       const selectedSound = Math.floor(Math.random() * checkSounds.length);
       checkSounds[selectedSound].current.play();
     }

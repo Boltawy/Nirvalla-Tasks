@@ -1,7 +1,7 @@
 "use client";
 
 import { TaskColumn } from "./TasklistColumn";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { TaskList, Task } from "../../types";
 import axios from "axios";
 import { tasklistContext } from "../context/TasklistContext";
@@ -32,6 +32,7 @@ import { createPortal } from "react-dom";
 import { list } from "postcss";
 import { TaskItem } from "./TaskItem";
 import { toast } from "sonner";
+import { useDraggable } from "react-use-draggable-scroll";
 
 export default function TaskListArea() {
   const { token, userIsLoading } = useContext(UserContext);
@@ -202,13 +203,15 @@ export default function TaskListArea() {
         (task) => task._id == draggedTask._id
       );
 
-      activeTaskTasklist.tasks.splice(draggedTaskIndex, 1);
+      const removedTaskArray = activeTaskTasklist.tasks.splice(draggedTaskIndex, 1);
+      const removedTask = removedTaskArray?.[0];
+      if (!removedTask || removedTask._id != draggedTask._id)
+        return console.log("prevented a duplicate key error :D");
       draggedTask.tasklistId = overTasklistId;
       overTaskList.tasks.push(draggedTask);
       setTaskLists(newTaskLists);
     }
   };
-
 
   const sensors = useSensors(
     useSensor(TouchSensor, {
@@ -243,6 +246,11 @@ export default function TaskListArea() {
     }
   };
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const { events } = useDraggable(scrollRef, {
+    isMounted: !!scrollRef.current,
+    applyRubberBandEffect: true,
+  });
   useEffect(() => {
     if (token && !userIsLoading) fetchData();
     else {
@@ -273,8 +281,12 @@ export default function TaskListArea() {
             >
               {tasklists.length > 0 ? (
                 <>
-                  <div className=" h-screen bg-gray-100 flex flex-col flex-1 overflow-auto">
-                    <div className="flex items-start gap-6 p-6 pt-24 min-w-max h-full overflow-x-auto">
+                  <div
+                    className=" h-screen bg-gray-100 flex flex-col flex-1 overflow-auto"
+                    ref={scrollRef}
+                    {...events}
+                  >
+                    <div className="flex items-start gap-6 p-6 pt-24 min-w-max h-full overflow-x-auto select-none">
                       {tasklists.map((tasklist: TaskList) => (
                         <TaskColumn key={tasklist._id} tasklist={tasklist} />
                       ))}
