@@ -6,6 +6,7 @@ import { TaskListProvider } from "./context/TasklistContext";
 import { Toaster } from "sonner";
 import { UserProvider } from "./context/UserContext";
 import { Suspense } from "react";
+import { Analytics } from "@vercel/analytics/next"
 
 export const playfairFont = Playfair({
   subsets: ["latin"],
@@ -35,6 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${interFont.className} ${playfairFont.className}`}>
+        <Analytics />
         <Toaster position="top-center" className="z-[200]" richColors={true} />
         <UserProvider>
           <TaskListProvider>
