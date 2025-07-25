@@ -89,7 +89,7 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
           style={style}
           onMouseDown={(e) => e.stopPropagation()}
           className={
-            "w-80 max-h-[calc(100vh-10rem)] bg-gray-50 rounded-lg border border-gray-200 flex flex-col " +
+            "w-80 max-h-[calc(100vh-10rem)] bg-gray-50 rounded-lg border border-gray-200 flex flex-col cursor-auto " +
             (className ? className : "")
           }
         >

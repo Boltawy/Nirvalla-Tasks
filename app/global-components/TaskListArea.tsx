@@ -282,7 +282,7 @@ export default function TaskListArea() {
               {tasklists.length > 0 ? (
                 <>
                   <div
-                    className=" h-screen bg-gray-100 flex flex-col flex-1 overflow-auto"
+                    className=" h-screen bg-gray-100 flex flex-col flex-1 overflow-auto cursor-grab"
                     ref={scrollRef}
                     {...events}
                   >
