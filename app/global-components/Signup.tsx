@@ -13,17 +13,19 @@ import { signupFormData } from "@/types";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { SubmitHandler, useForm } from "react-hook-form";
 import FloatingLabelInput from "./FloatingLabelInput";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { CircleAlert, Loader2 } from "lucide-react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 import axios from "axios";
 import { baseUrl } from "../constants";
 import OAuthMenu from "./OAuthMenu";
+import { UserContext } from "../context/UserContext";
 export function Signup({}) {
   const [rerenderCount, setRerenderCount] = useState(0); //for re-rendering when the form error changes.
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { setToken } = useContext(UserContext);
 
   const {
     register,
@@ -45,6 +47,11 @@ export function Signup({}) {
       const res = await axios.post(`${baseUrl}/auth/signup`, data);
       setOpen(false);
       toast.success("Successfully signed up!");
+      const token = res.data.data.accessToken;
+      console.log(token);
+      setToken(token);
+      localStorage.setItem("token", token);
+      window.location.href = "/tasks-app";
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
