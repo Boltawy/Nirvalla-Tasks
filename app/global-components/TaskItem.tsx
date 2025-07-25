@@ -155,7 +155,7 @@ export function TaskItem({
                 // Drag overlay
                 <div
                   className={
-                    "h-9 hover:shadow-sm border-2 rounded-lg border-blue-500 cursor-grab active:cursor-grabbing"
+                    "h-9 hover:shadow-sm rounded-lg bg-white border border-gray-200 cursor-grab active:cursor-grabbing"
                   }
                 ></div>
               ) : (

@@ -236,7 +236,7 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
         <div
           style={style}
           ref={setNodeRef}
-          className="w-80 h-[calc(100vh-10rem)] border-r-4 border-blue-500 flex flex-col"
+          className="w-80 h-[calc(100vh-10rem)] flex flex-col"
         ></div>
       )}
     </>
