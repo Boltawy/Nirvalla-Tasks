@@ -43,10 +43,16 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
   const [listNameValue, setListNameValue] = useState(tasklist.title);
   const [canPlaySound, setCanPlaySound] = useState(false);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && newTaskTitle.trim() !== "") {
+  const handleAddTask = () => {
+    if (newTaskTitle.trim() !== "") {
       addTask(tasklist._id, newTaskTitle);
       setNewTaskTitle("");
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === "Escape") {
+      handleAddTask();
     }
   };
 
@@ -168,7 +174,12 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
           {/* Add Task */}
           <div className="p-4 border-b border-gray-100 bg-white">
             <div className="flex items-center gap-2">
-              <Plus className="h-4 w-4 text-gray-400 flex-shrink-0" />
+              <button
+                onClick={handleAddTask}
+                className={newTaskTitle.trim() == "" && "cursor-default"}
+              >
+                <Plus className="h-4 w-4 text-gray-400 flex-shrink-0" />
+              </button>
               <Input
                 value={newTaskTitle}
                 onChange={(e) => setNewTaskTitle(e.target.value)}
