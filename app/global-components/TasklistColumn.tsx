@@ -130,7 +130,7 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
                 />
               ) : (
                 <h3
-                  className="text-lg font-medium text-gray-900 hover:text-blue-600"
+                  className="text-lg font-medium text-gray-900 hover:text-blue-600 cursor-pointer"
                   onClick={() => {
                     if (!tasklist.isDefault) setEditingListName(true);
                   }}
