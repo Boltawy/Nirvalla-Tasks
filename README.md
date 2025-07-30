@@ -1,4 +1,4 @@
-# [Nirvalla Tasks](https://github.com/Boltawy/Nirvalla-Tasks)
+# [Nirvalla Tasks](https://nirvalla-tasks.vercel.app)
 A personal-first, open-source task management app.
 
 <img width="14544" height="5835" alt="nirvalla-tasks-white-banner" src="https://github.com/user-attachments/assets/b6bb2a2c-ed3a-45a6-a31e-ed823b674711" />
