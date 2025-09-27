@@ -33,11 +33,13 @@ import { list } from "postcss";
 import { TaskItem } from "./TaskItem";
 import { toast } from "sonner";
 import { useDraggable } from "react-use-draggable-scroll";
+import ClientCard from "./ClientCard";
 
 export default function TaskListArea() {
   const { token, userIsLoading } = useContext(UserContext);
   const [activeTasklist, setActiveTasklist] = useState<TaskList | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [activeClient, setActiveClient] = useState(null);
   // const [dragOverCount, setDragOverCount] = useState<number>(0);
 
   const {
@@ -346,6 +348,12 @@ export default function TaskListArea() {
                     <TaskItem
                       task={activeTask}
                       listId={activeTask.tasklistId}
+                      // className={"opacity-50"}
+                    />
+                  )}
+                  {activeClient && (
+                    <ClientCard
+                      client={activeClient}
                       // className={"opacity-50"}
                     />
                   )}

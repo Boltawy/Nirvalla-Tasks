@@ -23,6 +23,7 @@ body {
 
 }
 
+
 @theme inline {
   --font-inter: var(--font-inter);
   --font-playfair: var(--font-playfair);
@@ -135,4 +136,8 @@ body {
   to {
     transform: rotate(-360deg);
   }
+}
+
+.remove-scrollbar {
+  scrollbar-width: none;
 }

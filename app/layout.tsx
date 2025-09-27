@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Playfair, Inter } from "next/font/google";
+import { Playfair, Inter, Kdam_Thmor_Pro } from "next/font/google";
 import "./globals.css";
 import Nav from "./global-components/Nav";
 import { TaskListProvider } from "./context/TasklistContext";
 import { Toaster } from "sonner";
 import { UserProvider } from "./context/UserContext";
 import { Suspense } from "react";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
 
 export const playfairFont = Playfair({
   subsets: ["latin"],
@@ -20,16 +20,22 @@ export const interFont = Inter({
   variable: "--font-inter",
 });
 
+export const kdamFont = Kdam_Thmor_Pro({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-kdam",
+});
+
 export const metadata: Metadata = {
-  title: "Nirvalla Tasks",
+  title: "Sputnik ERP",
   description: "The personal open-source task management app.",
   keywords: ["task management", "task app", "task list", "task tracker"],
   openGraph: {
-    title: "Nirvalla Tasks",
+    title: "Sputnik ERP",
     description: "The personal open-source task management app.",
     type: "website",
     locale: "en",
-    siteName: "Nirvalla Tasks",
+    siteName: "Sputnik ERP",
     images: [
       {
         url: "/nirvalla-tasks-white-banner.png",
@@ -40,7 +46,7 @@ export const metadata: Metadata = {
     ],
   },
   icons: {
-    icon: "/nirvalla-b&w-thick.svg",
+    icon: "/sputnik-dark.svg",
   },
 };
 
@@ -50,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" style={{ fontSize: "14px" }}>
       <body className={`${interFont.className} ${playfairFont.className}`}>
         <Analytics />
         <Toaster position="top-center" className="z-[200]" richColors={true} />

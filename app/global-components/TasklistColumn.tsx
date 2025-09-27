@@ -28,6 +28,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import ClientCard from "./ClientCard";
 
 interface TaskColumnProps {
   tasklist: TaskList;
@@ -42,6 +43,39 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
   const [editingListName, setEditingListName] = useState(false);
   const [listNameValue, setListNameValue] = useState(tasklist.title);
   const [canPlaySound, setCanPlaySound] = useState(false);
+
+  const [clients, setClients] = useState([
+    {
+      _id: "1",
+      name: "John Doe",
+      tier: "Gold",
+      email: "janedoe@example.com",
+      phone: "+2011000191986",
+      address: "New Cairo",
+      profit: 350,
+      children: 35,
+    },
+    {
+      _id: "2",
+      name: "Bob Smith",
+      email: "bobsmith@example.com",
+      tier: "Silver",
+      phone: "+2011000191986",
+      address: "Alexandria",
+      profit: 600,
+      children: 35,
+    },
+    {
+      _id: "3",
+      name: "Alice Johnson",
+      email: "alicejohnson@example.com",
+      tier: "Bronze",
+      phone: "+2011000191986",
+      address: "Cairo",
+      profit: 1200,
+      children: 35,
+    },
+  ]);
 
   const handleAddTask = () => {
     if (newTaskTitle.trim() !== "") {
@@ -95,7 +129,7 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
           style={style}
           onMouseDown={(e) => e.stopPropagation()}
           className={
-            "w-80 max-h-[calc(100vh-10rem)] bg-gray-50 rounded-lg border border-gray-200 flex flex-col cursor-auto " +
+            "max-h-[calc(100vh-10rem)] bg-gray-50 rounded-lg border border-gray-200 flex flex-col cursor-auto " +
             (className ? className : "")
           }
         >
@@ -104,7 +138,7 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
             {...attributes}
             {...listeners}
             className={
-              "p-4 border-b border-gray-200 bg-white rounded-t-lg flex justify-between items-center gap-2 touch-none " +
+              "p-4 border-b border-gray-200 bg-white rounded-t-lg flex justify-between items-center gap-2 touch-none" +
               (tasklist.isDefault
                 ? "cursor-auto"
                 : "cursor-grab active:cursor-grabbing")
@@ -171,76 +205,19 @@ export function TaskColumn({ tasklist, className }: TaskColumnProps) {
         </p> */}
           </div>
 
-          {/* Add Task */}
-          <div className="p-4 border-b border-gray-100 bg-white">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleAddTask}
-                className={newTaskTitle.trim() == "" && "cursor-default"}
-              >
-                <Plus className="h-4 w-4 text-gray-400 flex-shrink-0" />
-              </button>
-              <Input
-                value={newTaskTitle}
-                onChange={(e) => setNewTaskTitle(e.target.value)}
-                enterKeyHint="enter"
-                onKeyDown={handleKeyPress}
-                placeholder="Add a task"
-                className="px-4 py-2 border-none shadow-none text-sm placeholder:text-gray-400 focus-visible:ring-0"
-              />
-            </div>
-          </div>
           {/* Tasks */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-2">
+          <div className="flex-1 overflow-y-auto p-4 space-y-2 remove-scrollbar">
             {/* Incomplete Tasks */}
             <SortableContext
               items={
-                tasklist.tasks.length > 0
-                  ? tasklist.tasks.map((task) => task._id)
-                  : []
+                clients.length > 0 ? clients.map((client) => client._id) : []
               }
               strategy={verticalListSortingStrategy}
             >
-              {tasklist.tasks.map(
-                (task) =>
-                  !task.completedAt && (
-                    <TaskItem
-                      key={task._id}
-                      task={task}
-                      listId={tasklist._id}
-                      canPlaySound={canPlaySound}
-                      setCanPlaySound={setCanPlaySound}
-                    />
-                  )
-              )}
+              {clients.map((client) => (
+                <ClientCard client={client} />
+              ))}
             </SortableContext>
-
-            {/* Completed Tasks */}
-            <div className="mt-6">
-              <div className="text-xs font-medium text-gray-500 mb-2 px-1">
-                {/* ({tasklist.completedTasks.length}) */}
-              </div>
-              {tasklist.tasks.length > 0 &&
-                tasklist.tasks.map(
-                  (task) =>
-                    task.completedAt && (
-                      <TaskItem
-                        key={task._id}
-                        task={task}
-                        listId={tasklist._id}
-                        canPlaySound={canPlaySound}
-                        setCanPlaySound={setCanPlaySound}
-                      />
-                    )
-                )}
-            </div>
-
-            {tasklist.tasks.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                <div className="text-sm mb-1">No tasks yet</div>
-                <div className="text-xs">Add a task above to get started</div>
-              </div>
-            )}
           </div>
         </div>
       ) : (

@@ -62,6 +62,11 @@ const config: Config = {
   				ring: 'hsl(var(--sidebar-ring))'
   			}
   		},
+		fontFamily: {
+			playfair: ['Playfair Display', 'serif'],
+			inter: ['Inter', 'sans-serif'],
+			kdam: ['Kdam Thmor Pro', 'sans-serif'],
+		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
@@ -91,6 +96,14 @@ const config: Config = {
   		}
   	}
   },
+  safelist: [
+	'bg-yellow-600',
+	'bg-yellow-300',
+	'bg-gray-400',
+	'border-b-yellow-600',
+	'border-b-yellow-300',
+	'border-b-gray-400'
+  ],
   plugins: [require("tailwindcss-animate")],
 };
 export default config;

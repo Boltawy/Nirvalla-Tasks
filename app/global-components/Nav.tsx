@@ -55,19 +55,39 @@ export default function Nav() {
   };
 
   useEffect(() => {
-    toast.info("This app is in active development, expect bugs and incomplete features. Thank you for understanding.", {dismissible: true, duration: 7000, closeButton: true, className: "w-max relative left-[-50%]", position: "bottom-center" });
+    toast.info(
+      "This app is in active development, expect bugs and incomplete features. Thank you for understanding.",
+      {
+        dismissible: true,
+        duration: 7000,
+        closeButton: true,
+        className: "w-max relative left-[-50%]",
+        position: "bottom-center",
+      }
+    );
   }, []);
   const path = usePathname();
   return (
     <>
-      <nav className="fixed top-0 z-50 w-screen flex justify-between items-center px-4 sm:px-8 md:px-12 py-3 mb-4 border-b border-gray-200 shadow-sm bg-gradient-to-b from-white from-20% via-white/70 via-80% to-white/60 backdrop-blur-md dark:from-black dark:from-20% dark:via-black/95 dark:via-80% dark:to-black/90 dark:border-gray-700">
+      <nav
+        className={
+          "fixed top-0 z-50 w-screen flex justify-between items-center px-4 sm:px-8 md:px-12 py-3 mb-4 shadow-sm" +
+          (path == "/tasks-app"
+            ? " bg-white border-b border-gray-200"
+            : " bg-transparent")
+        }
+      >
         <div>
           <Link href={"/"}>
             <Image
-              src="/nirvalla-b&w-thick.svg"
+              src={
+                path == "/tasks-app"
+                  ? "/sputnik-title-dark.svg"
+                  : "/sputnik-title-light.svg"
+              }
               alt="nirvalla logo"
-              width={40}
-              height={40}
+              width={120}
+              height={80}
             />
           </Link>
         </div>
@@ -97,16 +117,6 @@ export default function Nav() {
               </Tooltip>
             </TooltipProvider>
           )}
-          {path != "/tasks-app" && !userIsLoading && !token && (
-            <li>
-              <Link
-                href="/tasks-app"
-                className="underline-offset-2 underline dark:text-white"
-              >
-                Try now
-              </Link>
-            </li>
-          )}
           {userIsLoading ? (
             <li>
               <p>Loading...</p>
@@ -124,12 +134,12 @@ export default function Nav() {
             </>
           ) : (
             <>
-              <li>
+              {/* <li>
                 <Signup />
               </li>
               <li>
                 <Login />
-              </li>
+              </li> */}
             </>
           )}
         </ul>
