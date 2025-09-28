@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     ],
   },
   icons: {
-    icon: "/sputnik-dark.svg",
+    icon: "/probe-dark.svg",
   },
 };
 
