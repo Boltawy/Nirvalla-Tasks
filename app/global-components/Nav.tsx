@@ -29,6 +29,7 @@ export default function Nav() {
 
   const handleLogout = () => {
     setToken(null);
+    localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("taskLists");
     localStorage.removeItem("userName");
