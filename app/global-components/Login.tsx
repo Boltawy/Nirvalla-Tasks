@@ -161,6 +161,7 @@ export function Login({}) {
               <Button
                 type="submit"
                 onClick={() => setRerenderCount((x) => x + 1)}
+                className="mb-2 md:mb-0"
               >
                 Submit
               </Button>
