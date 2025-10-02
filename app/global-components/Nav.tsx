@@ -31,7 +31,7 @@ export default function Nav() {
     setToken(null);
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
-    localStorage.removeItem("taskLists");
+    localStorage.removeItem("tasklists");
     localStorage.removeItem("userName");
     localStorage.removeItem("userId");
     toast.success("Logged out!");
